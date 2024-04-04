@@ -56,7 +56,7 @@ public class UserServicesImpl implements UserServices{
 //        sender.setSent(true);
 
         validateReceiver(sendOrderRequest.getReceiver().getPhoneNumber());
-        User receiver = userRepository.findByPhoneNumber(sendOrderRequest.getReceiver().getPhoneNumber());
+//        User receiver = userRepository.findByPhoneNumber(sendOrderRequest.getReceiver().getPhoneNumber());
 //        receiver.setProduct(product);
 //        receiver.setReceived(true);
 

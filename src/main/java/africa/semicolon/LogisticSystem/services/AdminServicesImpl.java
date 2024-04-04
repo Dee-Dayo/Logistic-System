@@ -8,6 +8,9 @@ import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
 
 @Service
@@ -41,30 +44,48 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public void takeOrder(Order order) {
+        if (!order.isPaid()) throw new OrderPaymentNotMade("Payment need to be made");
         orderRepository.save(order);
         Rider rider = findAvailableRider();
+
         assignOrder(rider, order);
+    }
+
+    @Override
+    public Long noOfOrders() {
+        return orderRepository.count();
+    }
+
+    @Override
+    public int findAvailableRiders() {
+        Rider[] riders = admin.getRiders();
+        List<Rider> availableRiders = new ArrayList<>();
+
+        for (Rider rider : riders) {
+            if(rider.isAvailable()) availableRiders.add(rider);
+        }
+        return availableRiders.size();
     }
 
     private void assignOrder(Rider rider, Order order) {
         rider.setAvailable(false);
         order.setIsAssignedTo(rider);
 
-        User sender = order.getSender();
-        Product product = order.getProduct();
-        User receiver = order.getReceiver();
-
-        sender.setProduct(null);
-        sender.setSent(true);
-        receiver.setProduct(product);
-        receiver.setReceived(true);
-
-        order.setDelivered(true);
-        orderRepository.delete(order);
-        rider.setAvailable(true);
-
-        userRepository.save(sender);
-        userRepository.save(receiver);
+//        User sender = order.getSender();
+//        Product product = order.getProduct();
+//        User receiver = order.getReceiver();
+//
+//        sender.setProduct(null);
+//        sender.setSent(true);
+//        receiver.setProduct(product);
+//        receiver.setReceived(true);
+//
+//        order.setDelivered(true);
+//        orderRepository.delete(order);
+//        rider.setAvailable(true);
+//
+//        userRepository.save(sender);
+//        userRepository.save(receiver);
     }
 
     private Rider findAvailableRider() {

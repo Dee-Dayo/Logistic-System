@@ -13,4 +13,8 @@ public interface AdminServices {
     int findNoOfRiders();
 
     void takeOrder(Order order);
+
+    Long noOfOrders();
+
+    int findAvailableRiders();
 }

@@ -11,5 +11,6 @@ public class Order {
     private User sender;
     private User receiver;
     private Rider isAssignedTo;
+    private boolean isPaid;
     private boolean isDelivered;
 }

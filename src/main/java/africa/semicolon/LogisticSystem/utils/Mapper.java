@@ -23,6 +23,7 @@ public class Mapper {
          order.setSender(sendOrderRequest.getSender());
          order.setReceiver(sendOrderRequest.getReceiver());
          order.setProduct(sendOrderRequest.getProduct());
+         order.setPaid(sendOrderRequest.isPaid());
          return order;
     }
 }
