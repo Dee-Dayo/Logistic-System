@@ -2,9 +2,11 @@ package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.*;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
+import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.exceptions.*;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +19,36 @@ import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
 public class AdminServicesImpl implements AdminServices{
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     OrderRepository orderRepository;
+    @Autowired
+    RiderRepository riderRepository;
 
-    private final Admin admin = new Admin();
+    @Autowired
+    RiderService riderService;
+
+    private Admin admin = new Admin();
+
+    @PostConstruct
+    public void setUpAdmin(){
+        setAdminDefaultRiders(admin);
+    }
+
+    private void setAdminDefaultRiders(Admin admin) {
+        Rider rider1 = new Rider();
+        rider1.setFirstName("Moh");
+        rider1.setLastName("Baba");
+
+        Rider rider2 = new Rider();
+        rider2.setFirstName("Beejay");
+        rider2.setLastName("Queue");
+
+        admin.getRiders().add(rider1);
+        admin.getRiders().add(rider2);
+
+        riderRepository.save(rider1);
+        riderRepository.save(rider2);
+    }
 
     @Override
     public Long findNoOfUsers() {
@@ -39,16 +66,21 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public int findNoOfRiders() {
-        return admin.getRiders().length;
+        return admin.getRiders().size();
     }
 
     @Override
     public void takeOrder(Order order) {
-        if (!order.isPaid()) throw new OrderPaymentNotMade("Payment need to be made");
+//        if (!order.isPaid()) throw new OrderPaymentNotMade("Payment need to be made");
         orderRepository.save(order);
-        Rider rider = findAvailableRider();
+        Rider rider = riderService.findRider();
+        rider.setAvailable(false);
+        riderRepository.save(rider);
 
-        assignOrder(rider, order);
+        order.setIsAssignedTo(rider);
+        orderRepository.save(order);
+        riderService.assignOrder(rider, order);
+//        assignOrder(rider, order);
     }
 
     @Override
@@ -58,10 +90,11 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public int findAvailableRiders() {
-        Rider[] riders = admin.getRiders();
+        List<Rider> defaultRiders = admin.getRiders();
+        System.out.println(defaultRiders.size());
         List<Rider> availableRiders = new ArrayList<>();
 
-        for (Rider rider : riders) {
+        for (Rider rider : defaultRiders) {
             if(rider.isAvailable()) availableRiders.add(rider);
         }
         return availableRiders.size();
@@ -88,13 +121,6 @@ public class AdminServicesImpl implements AdminServices{
 //        userRepository.save(receiver);
     }
 
-    private Rider findAvailableRider() {
-        Rider[] riders = admin.getRiders();
-        for (Rider rider : riders) {
-            if(rider.isAvailable()) return rider;
-        }
-        throw new RiderNotAvailableException("No rider available at the moment");
-    }
 
     private void validateLength(String phoneNumber) {
         String number = phoneNumber.strip();

@@ -9,5 +9,5 @@ public class SendOrderRequest {
     private User sender;
     private Product product;
     private User receiver;
-    private boolean isPaid;
+//    private boolean isPaid;
 }

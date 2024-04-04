@@ -9,6 +9,5 @@ public class UserRegisterRequest {
     private String lastName;
     private String phoneNumber;
     private String password;
-    private Product product;
     private String address;
 }

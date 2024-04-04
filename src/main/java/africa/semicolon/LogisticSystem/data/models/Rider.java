@@ -1,8 +1,10 @@
 package africa.semicolon.LogisticSystem.data.models;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@Document("Riders")
 public class Rider {
     private String riderId;
     private String firstName;

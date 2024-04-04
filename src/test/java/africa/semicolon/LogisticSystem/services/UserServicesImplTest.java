@@ -40,7 +40,6 @@ class UserServicesImplTest {
         userRegisterRequest.setLastName("Akinyemi");
         userRegisterRequest.setPhoneNumber("44444444444");
         userRegisterRequest.setPassword("password");
-        userRegisterRequest.setProduct(TV);
         userRegisterRequest.setAddress("yaba");
 
         userRegisterRequest2 = new UserRegisterRequest();

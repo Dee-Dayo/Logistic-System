@@ -14,7 +14,7 @@ public class Mapper {
         user.setPassword(userRegisterRequest.getPassword());
         user.setFirstName(userRegisterRequest.getFirstName());
         user.setLastName(userRegisterRequest.getLastName());
-        user.setProduct(userRegisterRequest.getProduct());
+        user.setAddress(userRegisterRequest.getAddress());
         return user;
     }
 
@@ -23,7 +23,7 @@ public class Mapper {
          order.setSender(sendOrderRequest.getSender());
          order.setReceiver(sendOrderRequest.getReceiver());
          order.setProduct(sendOrderRequest.getProduct());
-         order.setPaid(sendOrderRequest.isPaid());
+//         order.setPaid(sendOrderRequest.isPaid());
          return order;
     }
 }

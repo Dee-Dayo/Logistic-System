@@ -50,7 +50,7 @@ public class UserServicesImpl implements UserServices{
     public void sendOrder(SendOrderRequest sendOrderRequest) {
         User sender = userRepository.findByPhoneNumber(sendOrderRequest.getSender().getPhoneNumber());
         validateSenderIsLoggedIn(sender);
-        Product product = sender.getProduct();
+        Product product = sendOrderRequest.getProduct();
         validateProduct(product);
 //        sender.setProduct(null);
 //        sender.setSent(true);
@@ -67,9 +67,9 @@ public class UserServicesImpl implements UserServices{
 //        userRepository.save(receiver);
     }
 
-    private void validateReceiver(String username) {
-        User user = findUserByNumber(username);
-        if (user == null) throw new ReceiverNotFoundException("Receiver not found");
+    private void validateReceiver(String phoneNumber) {
+        String number = phoneNumber.strip();
+        if (number.length() != 11) throw new InvalidPhoneNumber("Invalid phone number");
     }
 
     private void validateProduct(Product product) {
