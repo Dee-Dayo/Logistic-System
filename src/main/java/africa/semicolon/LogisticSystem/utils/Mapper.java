@@ -1,7 +1,9 @@
 package africa.semicolon.LogisticSystem.utils;
 
 
+import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.User;
+import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 
 public class Mapper {
@@ -14,5 +16,13 @@ public class Mapper {
         user.setLastName(userRegisterRequest.getLastName());
         user.setProduct(userRegisterRequest.getProduct());
         return user;
+    }
+
+    public static Order requestMap(SendOrderRequest sendOrderRequest){
+         Order order = new Order();
+         order.setSender(sendOrderRequest.getSender());
+         order.setReceiver(sendOrderRequest.getReceiver());
+         order.setProduct(sendOrderRequest.getProduct());
+         return order;
     }
 }

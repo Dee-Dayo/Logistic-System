@@ -1,17 +1,10 @@
 package africa.semicolon.LogisticSystem.services;
 
-import africa.semicolon.LogisticSystem.data.models.Admin;
-import africa.semicolon.LogisticSystem.data.models.Product;
-import africa.semicolon.LogisticSystem.data.models.User;
+import africa.semicolon.LogisticSystem.data.models.*;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
-import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.exceptions.InvalidPasswordException;
-import africa.semicolon.LogisticSystem.exceptions.InvalidPhoneNumber;
-import africa.semicolon.LogisticSystem.exceptions.UserAlreadyExistException;
-import africa.semicolon.LogisticSystem.exceptions.UserNotFoundException;
+import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +18,7 @@ public class AdminServicesImpl implements AdminServices{
     @Autowired
     OrderRepository orderRepository;
 
-    @Override
-    public void collectOrder(SendOrderRequest sendOrderRequest) {
-//        User user = userServices.findUserByNumber(sendOrderRequest.getSender().getPhoneNumber());
-//        Product product = user.getProduct();
-//        user.setProduct(null);
-//        userRepository.save(user);
-    }
+    private final Admin admin = new Admin();
 
     @Override
     public Long findNoOfUsers() {
@@ -49,8 +36,43 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public int findNoOfRiders() {
-        Admin admin = new Admin();
         return admin.getRiders().length;
+    }
+
+    @Override
+    public void takeOrder(Order order) {
+        orderRepository.save(order);
+        Rider rider = findAvailableRider();
+        assignOrder(rider, order);
+    }
+
+    private void assignOrder(Rider rider, Order order) {
+        rider.setAvailable(false);
+        order.setIsAssignedTo(rider);
+
+        User sender = order.getSender();
+        Product product = order.getProduct();
+        User receiver = order.getReceiver();
+
+        sender.setProduct(null);
+        sender.setSent(true);
+        receiver.setProduct(product);
+        receiver.setReceived(true);
+
+        order.setDelivered(true);
+        orderRepository.delete(order);
+        rider.setAvailable(true);
+
+        userRepository.save(sender);
+        userRepository.save(receiver);
+    }
+
+    private Rider findAvailableRider() {
+        Rider[] riders = admin.getRiders();
+        for (Rider rider : riders) {
+            if(rider.isAvailable()) return rider;
+        }
+        throw new RiderNotAvailableException("No rider available at the moment");
     }
 
     private void validateLength(String phoneNumber) {

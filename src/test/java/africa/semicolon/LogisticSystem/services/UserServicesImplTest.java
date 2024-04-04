@@ -144,12 +144,16 @@ class UserServicesImplTest {
 
         User receiver = new User();
         receiver.setPhoneNumber("66666666666");
+        receiver.setPassword("password");
+        receiver.setAddress("mushin");
+        receiver.setFirstName("name");
+        receiver.setLastName("lastName");
 
         User sender = userServices.findUserByNumber("44444444444");
         SendOrderRequest sendOrderRequest = new SendOrderRequest();
         sendOrderRequest.setSender(sender);
         sendOrderRequest.setProduct(sender.getProduct());
         sendOrderRequest.setReceiver(receiver);
-        assertThrows(ReceiverNotFoundException.class, ()->userServices.sendOrder(sendOrderRequest));
+        assertThrows(UserNotFoundException.class, ()->userServices.sendOrder(sendOrderRequest));
     }
 }

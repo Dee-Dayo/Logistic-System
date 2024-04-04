@@ -1,5 +1,6 @@
 package africa.semicolon.LogisticSystem.services;
 
+import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
@@ -8,6 +9,8 @@ import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
 
 @Service
 public class UserServicesImpl implements UserServices{
@@ -49,15 +52,19 @@ public class UserServicesImpl implements UserServices{
         validateSenderIsLoggedIn(sender);
         Product product = sender.getProduct();
         validateProduct(product);
-        sender.setProduct(null);
-        sender.setSent(true);
-        userRepository.save(sender);
+//        sender.setProduct(null);
+//        sender.setSent(true);
 
+        validateReceiver(sendOrderRequest.getReceiver().getPhoneNumber());
         User receiver = userRepository.findByPhoneNumber(sendOrderRequest.getReceiver().getPhoneNumber());
-        validateReceiver(receiver.getPhoneNumber());
-        receiver.setProduct(product);
-        receiver.setReceived(true);
-        userRepository.save(receiver);
+//        receiver.setProduct(product);
+//        receiver.setReceived(true);
+
+        Order order = requestMap(sendOrderRequest);
+        adminServices.takeOrder(order);
+
+//        userRepository.save(sender);
+//        userRepository.save(receiver);
     }
 
     private void validateReceiver(String username) {
