@@ -7,11 +7,13 @@ import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
 import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.requests.UserLoginRequest;
+import africa.semicolon.LogisticSystem.dto.requests.response.UserLoginResponse;
+import africa.semicolon.LogisticSystem.dto.requests.response.UserSendOrderResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
+import static africa.semicolon.LogisticSystem.utils.Mapper.*;
 
 @Service
 public class UserServicesImpl implements UserServices{
@@ -31,11 +33,12 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public void login(UserLoginRequest userLoginRequest) {
+    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
         User user = findUserByNumber(userLoginRequest.getPhoneNumber());
         validatePassword(userLoginRequest);
         user.setLoggedIn(true);
         userRepository.save(user);
+        return loginResponseMap(user);
     }
 
     private void validatePassword(UserLoginRequest userLoginRequest) {
@@ -50,24 +53,28 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public void sendOrder(SendOrderRequest sendOrderRequest) {
+    public UserSendOrderResponse sendOrder(SendOrderRequest sendOrderRequest) {
         User sender = userRepository.findByPhoneNumber(sendOrderRequest.getSender().getPhoneNumber());
         validateSenderIsLoggedIn(sender);
         Product product = sendOrderRequest.getProduct();
-        validateProduct(product);
-//        sender.setProduct(null);
-//        sender.setSent(true);
+        validateProduct(product);;
 
         validateReceiver(sendOrderRequest.getReceiver().getPhoneNumber());
-//        User receiver = userRepository.findByPhoneNumber(sendOrderRequest.getReceiver().getPhoneNumber());
-//        receiver.setProduct(product);
-//        receiver.setReceived(true);
+        validateReceiverAddress(sendOrderRequest.getReceiver().getAddress());
+        validateReceiverName(sendOrderRequest.getReceiver().getFirstName());
 
         Order order = requestMap(sendOrderRequest);
         adminServices.takeOrder(order);
 
-//        userRepository.save(sender);
-//        userRepository.save(receiver);
+        return sendOrderResponseMap(order);
+    }
+
+    private void validateReceiverName(String firstName) {
+        if (firstName == null) throw new InvalidName("Supply the receiver name");
+    }
+
+    private void validateReceiverAddress(String address) {
+        if (address == null) throw new InvalidAddress("Invalid address");
     }
 
     @Override

@@ -70,11 +70,16 @@ public class AdminServicesImpl implements AdminServices{
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
         validateLength(userRegisterRequest.getPhoneNumber());
         validatePhoneNumber(userRegisterRequest.getPhoneNumber());
+        validateNumber(userRegisterRequest.getAddress());
 
         User newUser = requestMap(userRegisterRequest);
         userRepository.save(newUser);
 
         return responseMap(newUser);
+    }
+
+    private void validateNumber(String address) {
+        if (address == null) throw new InvalidAddress("Invalid address");
     }
 
     @Override
