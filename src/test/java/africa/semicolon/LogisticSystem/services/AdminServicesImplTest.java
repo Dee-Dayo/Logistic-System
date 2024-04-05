@@ -3,6 +3,7 @@ package africa.semicolon.LogisticSystem.services;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
@@ -30,15 +31,12 @@ class AdminServicesImplTest {
     OrderRepository orderRepository;
     @Autowired
     public OrderService orderService;
+    @Autowired
+    public RiderService riderService;
 
     private UserRegisterRequest userRegisterRequest;
-    private UserRegisterRequest userRegisterRequest2;
     private UserLoginRequest userLoginRequest;
 
-    @AfterEach
-    public void tearDown(){
-
-    }
 
     @BeforeEach
     public void setUp() {
@@ -51,13 +49,6 @@ class AdminServicesImplTest {
         userRegisterRequest.setPhoneNumber("44444444444");
         userRegisterRequest.setPassword("password");
         userRegisterRequest.setAddress("yaba");
-
-//        userRegisterRequest2 = new UserRegisterRequest();
-//        userRegisterRequest2.setFirstName("Moh");
-//        userRegisterRequest2.setLastName("Baba");
-//        userRegisterRequest2.setPhoneNumber("55555555555");
-//        userRegisterRequest2.setPassword("password");
-//        userRegisterRequest2.setAddress("mushin");
 
         userLoginRequest = new UserLoginRequest();
         userLoginRequest.setPhoneNumber("44444444444");
@@ -87,7 +78,6 @@ class AdminServicesImplTest {
     @Test
     public void adminHasTwoRidersByDefaultAvailable(){
         assertEquals(2, adminServices.findNoOfRiders());
-        assertEquals(2, adminServices.findAvailableRiders());
     }
 
     @Test
@@ -103,6 +93,7 @@ class AdminServicesImplTest {
     public void userSendOrders_orderRepositoryIsOne(){
         adminServices.register(userRegisterRequest);
          assertEquals(0, adminServices.noOfOrders());
+         assertEquals(2, adminServices.findAvailableRiders());
 
         userServices.login(userLoginRequest);
         User sender = userServices.findUserByNumber("44444444444");
@@ -115,7 +106,6 @@ class AdminServicesImplTest {
         sendOrderRequest.setSender(sender);
         sendOrderRequest.setProduct(TV);
         sendOrderRequest.setReceiver(receiver);
-//        sendOrderRequest.setPaid(true);
         userServices.sendOrder(sendOrderRequest);
         assertEquals(1, adminServices.noOfOrders());
     }
@@ -142,15 +132,13 @@ class AdminServicesImplTest {
 //    }
 
     @Test
-    public void userSendOrder_adminAssignRiderToOrderToDeliver(){
+    public void userSendOrder_adminAssignRiderToRetrieveOrder(){
         adminServices.register(userRegisterRequest);
-//        adminServices.register(userRegisterRequest2);
         assertEquals(0, adminServices.noOfOrders());
         assertEquals(2, adminServices.findAvailableRiders());
 
         userServices.login(userLoginRequest);
         User sender = userServices.findUserByNumber("44444444444");
-//        User receiver = userServices.findUserByNumber("55555555555");
 
         User receiver = new User();
         receiver.setAddress("mushin");
@@ -160,7 +148,6 @@ class AdminServicesImplTest {
         sendOrderRequest.setSender(sender);
         sendOrderRequest.setProduct(TV);
         sendOrderRequest.setReceiver(receiver);
-//        sendOrderRequest.setPaid(true);
 
         userServices.sendOrder(sendOrderRequest);
         assertEquals(1, adminServices.noOfOrders());
@@ -168,5 +155,79 @@ class AdminServicesImplTest {
         Order order = orderService.getOrderByUser(sender);
 
         assertEquals("Moh", order.getIsAssignedTo().getFirstName());
+        assertEquals(1, riderService.findNoOfAvailableRiders());
+        assertEquals(1, adminServices.findAvailableRiders());
+    }
+
+    @Test
+    public void userSendOrder_adminAssignRiderToRetrieveOrder_SenderMakesPayment(){
+        adminServices.register(userRegisterRequest);
+        assertEquals(0, adminServices.noOfOrders());
+
+        userServices.login(userLoginRequest);
+        User sender = userServices.findUserByNumber("44444444444");
+
+        User receiver = new User();
+        receiver.setAddress("mushin");
+        receiver.setPhoneNumber("55555555555");
+
+        SendOrderRequest sendOrderRequest = new SendOrderRequest();
+        sendOrderRequest.setSender(sender);
+        sendOrderRequest.setProduct(TV);
+        sendOrderRequest.setReceiver(receiver);
+
+        userServices.sendOrder(sendOrderRequest);
+
+        Order order = orderService.getOrderByUser(sender);
+
+        assertEquals("Moh", userServices.trackOrderById(order.getId()).getIsAssignedTo().getFirstName());
+        assertTrue(userServices.trackOrderById(order.getId()).isPending());
+        assertFalse(userServices.trackOrderById(order.getId()).isPaid());
+
+        OrderPaymentRequest orderPaymentRequest = new OrderPaymentRequest();
+        orderPaymentRequest.setOrderId(order.getId());
+        orderPaymentRequest.setPaid(true);
+
+        userServices.makePayment(orderPaymentRequest);
+
+        order = orderService.getOrderByUser(sender);
+        assertEquals("Moh", order.getIsAssignedTo().getFirstName());
+        assertTrue(userServices.trackOrderById(order.getId()).isPaid());
+    }
+
+     @Test
+    public void userSendOrder_adminAssignRiderToRetrieveOrder_SenderDoesntMakePaymen_ThrowException(){
+        adminServices.register(userRegisterRequest);
+        assertEquals(0, adminServices.noOfOrders());
+
+        userServices.login(userLoginRequest);
+        User sender = userServices.findUserByNumber("44444444444");
+
+        User receiver = new User();
+        receiver.setAddress("mushin");
+        receiver.setPhoneNumber("55555555555");
+
+        SendOrderRequest sendOrderRequest = new SendOrderRequest();
+        sendOrderRequest.setSender(sender);
+        sendOrderRequest.setProduct(TV);
+        sendOrderRequest.setReceiver(receiver);
+
+        userServices.sendOrder(sendOrderRequest);
+
+        Order order = orderService.getOrderByUser(sender);
+
+        assertEquals("Moh", userServices.trackOrderById(order.getId()).getIsAssignedTo().getFirstName());
+        assertTrue(userServices.trackOrderById(order.getId()).isPending());
+        assertFalse(userServices.trackOrderById(order.getId()).isPaid());
+
+        OrderPaymentRequest orderPaymentRequest = new OrderPaymentRequest();
+        orderPaymentRequest.setOrderId(order.getId());
+        orderPaymentRequest.setPaid(false);
+
+        assertThrows(OrderPaymentNotMade.class, ()->userServices.makePayment(orderPaymentRequest));
+
+        order = orderService.getOrderByUser(sender);
+        assertEquals("Moh", order.getIsAssignedTo().getFirstName());
+        assertFalse(userServices.trackOrderById(order.getId()).isPaid());
     }
 }

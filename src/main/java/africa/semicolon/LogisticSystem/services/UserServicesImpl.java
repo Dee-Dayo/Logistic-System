@@ -4,6 +4,7 @@ import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
 import africa.semicolon.LogisticSystem.exceptions.*;
@@ -19,6 +20,8 @@ public class UserServicesImpl implements UserServices{
     private UserRepository userRepository;
     @Autowired
     private AdminServices adminServices;
+    @Autowired
+    private OrderService orderService;
 
 
     @Override
@@ -65,6 +68,17 @@ public class UserServicesImpl implements UserServices{
 
 //        userRepository.save(sender);
 //        userRepository.save(receiver);
+    }
+
+    @Override
+    public Order trackOrderById(String id) {
+        return orderService.getOrderById(id);
+    }
+
+    @Override
+    public void makePayment(OrderPaymentRequest orderPaymentRequest) {
+//        Order order = trackOrderById(orderPaymentRequest.getOrderId());
+        adminServices.sendOrder(orderPaymentRequest);
     }
 
     private void validateReceiver(String phoneNumber) {

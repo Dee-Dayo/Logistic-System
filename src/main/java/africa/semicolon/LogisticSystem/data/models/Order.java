@@ -14,6 +14,8 @@ public class Order {
     private User receiver;
     private Rider isAssignedTo;
     private boolean isPaid;
+    private boolean isPending;
     private boolean isDelivered;
     private LocalDateTime dateCreated = LocalDateTime.now();
+    private LocalDateTime dateCollected;
 }

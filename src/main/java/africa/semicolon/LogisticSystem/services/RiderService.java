@@ -7,4 +7,8 @@ public interface RiderService {
     Rider findRider();
 
     void assignOrder(Rider rider, Order order);
+
+    int findNoOfAvailableRiders();
+
+    void save(Rider rider1);
 }

@@ -4,12 +4,14 @@ import africa.semicolon.LogisticSystem.data.models.*;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +28,10 @@ public class AdminServicesImpl implements AdminServices{
 
     @Autowired
     RiderService riderService;
+    @Autowired
+    OrderService orderService;
 
-    private Admin admin = new Admin();
+    private final Admin admin = new Admin();
 
     @PostConstruct
     public void setUpAdmin(){
@@ -38,13 +42,18 @@ public class AdminServicesImpl implements AdminServices{
         Rider rider1 = new Rider();
         rider1.setFirstName("Moh");
         rider1.setLastName("Baba");
+        rider1.setAvailable(true);
 
         Rider rider2 = new Rider();
         rider2.setFirstName("Beejay");
         rider2.setLastName("Queue");
+        rider2.setAvailable(true);
 
         admin.getRiders().add(rider1);
         admin.getRiders().add(rider2);
+
+//        riderService.save(rider1);
+//        riderService.save(rider2);
 
         riderRepository.save(rider1);
         riderRepository.save(rider2);
@@ -71,16 +80,14 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public void takeOrder(Order order) {
-//        if (!order.isPaid()) throw new OrderPaymentNotMade("Payment need to be made");
         orderRepository.save(order);
+
         Rider rider = riderService.findRider();
         rider.setAvailable(false);
         riderRepository.save(rider);
 
-        order.setIsAssignedTo(rider);
-        orderRepository.save(order);
         riderService.assignOrder(rider, order);
-//        assignOrder(rider, order);
+        orderRepository.save(order);
     }
 
     @Override
@@ -90,15 +97,25 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public int findAvailableRiders() {
-        List<Rider> defaultRiders = admin.getRiders();
-        System.out.println(defaultRiders.size());
-        List<Rider> availableRiders = new ArrayList<>();
-
-        for (Rider rider : defaultRiders) {
-            if(rider.isAvailable()) availableRiders.add(rider);
+        List<Rider> riders = riderRepository.findAll();
+        List<Rider> availale = new ArrayList<>();
+        for (Rider rider : riders){
+            if (rider.isAvailable()) availale.add(rider);
         }
-        return availableRiders.size();
+        return availale.size();
     }
+
+    @Override
+    public void sendOrder(OrderPaymentRequest orderPaymentRequest) {
+        Order order = orderService.getOrderById(orderPaymentRequest.getOrderId());
+        if (orderPaymentRequest.isPaid()){
+            order.setPaid(true);
+            order.setDateCollected(LocalDateTime.now());
+            orderRepository.save(order);
+        }
+        throw new OrderPaymentNotMade("Payment not made");
+    }
+
 
     private void assignOrder(Rider rider, Order order) {
         rider.setAvailable(false);
