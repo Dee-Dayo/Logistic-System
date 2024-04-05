@@ -11,4 +11,6 @@ public interface RiderService {
     int findNoOfAvailableRiders();
 
     void save(Rider rider1);
+
+    void sendOrder(Order order);
 }

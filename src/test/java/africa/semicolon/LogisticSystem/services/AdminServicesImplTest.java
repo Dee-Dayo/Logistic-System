@@ -3,12 +3,11 @@ package africa.semicolon.LogisticSystem.services;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
-import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.UserLoginRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.exceptions.OrderPaymentNotMade;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,27 +109,6 @@ class AdminServicesImplTest {
         assertEquals(1, adminServices.noOfOrders());
     }
 
-//    @Test
-//    public void userSendOrdersButDoesntPay_orderRepositoryIsZero(){
-//        adminServices.register(userRegisterRequest);
-////        adminServices.register(userRegisterRequest2);
-//        assertEquals(0, adminServices.noOfOrders());
-//
-//        userServices.login(userLoginRequest);
-//        User sender = userServices.findUserByNumber("44444444444");
-//
-//        User receiver = new User();
-//        receiver.setAddress("mushin");
-//        receiver.setPhoneNumber("55555555555");
-//
-//        SendOrderRequest sendOrderRequest = new SendOrderRequest();
-//        sendOrderRequest.setSender(sender);
-//        sendOrderRequest.setProduct(TV);
-//        sendOrderRequest.setReceiver(receiver);
-//        assertThrows(OrderPaymentNotMade.class, ()->userServices.sendOrder(sendOrderRequest));
-//        assertEquals(0, adminServices.noOfOrders());
-//    }
-
     @Test
     public void userSendOrder_adminAssignRiderToRetrieveOrder(){
         adminServices.register(userRegisterRequest);
@@ -230,4 +208,7 @@ class AdminServicesImplTest {
         assertEquals("Moh", order.getIsAssignedTo().getFirstName());
         assertFalse(userServices.trackOrderById(order.getId()).isPaid());
     }
+
+    @Test
+    public void userSendOrder_makePayment_orderIsDelivered(){}
 }

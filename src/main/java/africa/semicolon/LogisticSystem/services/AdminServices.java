@@ -1,15 +1,15 @@
 package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
-import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.response.UserRegisterResponse;
 
 public interface AdminServices {
 
     Long findNoOfUsers();
 
-    void register(UserRegisterRequest userRegisterRequest);
+    UserRegisterResponse register(UserRegisterRequest userRegisterRequest);
 
     int findNoOfRiders();
 

@@ -2,10 +2,9 @@ package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.User;
-import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.UserLoginRequest;
 
 public interface UserServices {
 

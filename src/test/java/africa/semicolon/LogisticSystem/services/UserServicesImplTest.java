@@ -2,9 +2,9 @@
 //
 //import africa.semicolon.LogisticSystem.data.models.User;
 //import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
-//import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
-//import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
-//import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+//import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
+//import africa.semicolon.LogisticSystem.dto.requests.requests.UserLoginRequest;
+//import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
 //import africa.semicolon.LogisticSystem.exceptions.*;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;

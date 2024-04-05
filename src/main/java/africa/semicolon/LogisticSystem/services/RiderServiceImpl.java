@@ -2,12 +2,14 @@ package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Rider;
+import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.exceptions.RiderAlreadyExist;
 import africa.semicolon.LogisticSystem.exceptions.RiderNotAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,11 +31,6 @@ public class RiderServiceImpl implements RiderService{
     public void assignOrder(Rider rider, Order order) {
         order.setIsAssignedTo(rider);
         order.setPending(true);
-
-
-//        rider.setAvailable(false);
-//
-//        riderRepository.save(rider);
     }
 
     @Override
@@ -47,5 +44,19 @@ public class RiderServiceImpl implements RiderService{
         if(riderRepository.existsById(rider.getId())) throw new RiderAlreadyExist("Rider already exist");
         riderRepository.save(rider);
     }
+
+    @Override
+    public void sendOrder(Order order) {
+        User sender = order.getSender();
+        Rider rider = order.getIsAssignedTo();
+        User receiver = order.getReceiver();
+
+        order.setPending(false);
+        order.setDelivered(true);
+        order.setDateCollected(LocalDateTime.now());
+
+        rider.setAvailable(true);
+    }
+
 
 }

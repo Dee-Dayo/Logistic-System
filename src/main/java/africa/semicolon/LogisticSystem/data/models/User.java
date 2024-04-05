@@ -12,8 +12,5 @@ public class User {
     private String password;
     private String address;
     private String id;
-//    private Product product;
-//    private boolean isSent;
-//    private boolean isReceived;
     private boolean isLoggedIn;
 }

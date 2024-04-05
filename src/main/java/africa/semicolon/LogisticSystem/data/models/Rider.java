@@ -10,6 +10,6 @@ public class Rider {
     private String id;
     private String firstName;
     private String lastName;
-    private Product product;
+    private Order order;
     private boolean isAvailable;
 }

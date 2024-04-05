@@ -1,4 +1,4 @@
-package africa.semicolon.LogisticSystem.dto.requests;
+package africa.semicolon.LogisticSystem.dto.requests.requests;
 
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;

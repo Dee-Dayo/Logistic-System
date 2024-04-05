@@ -4,8 +4,9 @@ import africa.semicolon.LogisticSystem.data.models.*;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
-import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.response.UserRegisterResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
+import static africa.semicolon.LogisticSystem.utils.Mapper.responseMap;
 
 @Service
 public class AdminServicesImpl implements AdminServices{
@@ -65,12 +67,14 @@ public class AdminServicesImpl implements AdminServices{
     }
 
     @Override
-    public void register(UserRegisterRequest userRegisterRequest) {
+    public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
         validateLength(userRegisterRequest.getPhoneNumber());
         validatePhoneNumber(userRegisterRequest.getPhoneNumber());
 
         User newUser = requestMap(userRegisterRequest);
         userRepository.save(newUser);
+
+        return responseMap(newUser);
     }
 
     @Override
@@ -88,6 +92,8 @@ public class AdminServicesImpl implements AdminServices{
 
         riderService.assignOrder(rider, order);
         orderRepository.save(order);
+
+
     }
 
     @Override
@@ -108,12 +114,18 @@ public class AdminServicesImpl implements AdminServices{
     @Override
     public void sendOrder(OrderPaymentRequest orderPaymentRequest) {
         Order order = orderService.getOrderById(orderPaymentRequest.getOrderId());
+
         if (orderPaymentRequest.isPaid()){
             order.setPaid(true);
             order.setDateCollected(LocalDateTime.now());
             orderRepository.save(order);
-        }
-        throw new OrderPaymentNotMade("Payment not made");
+        } else throw new OrderPaymentNotMade("Payment not made");
+
+        riderService.sendOrder(order);
+        orderRepository.save(order);
+        userRepository.save(order.getSender());
+        userRepository.save(order.getReceiver());
+        riderRepository.save(order.getIsAssignedTo());
     }
 
 
