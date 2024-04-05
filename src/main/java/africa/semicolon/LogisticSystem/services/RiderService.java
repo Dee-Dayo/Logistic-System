@@ -12,5 +12,5 @@ public interface RiderService {
 
     void save(Rider rider1);
 
-    void sendOrder(Order order);
+//    void sendOrder(Order order);
 }

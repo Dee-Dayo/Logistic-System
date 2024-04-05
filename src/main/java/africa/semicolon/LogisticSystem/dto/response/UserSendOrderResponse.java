@@ -1,4 +1,4 @@
-package africa.semicolon.LogisticSystem.dto.requests.response;
+package africa.semicolon.LogisticSystem.dto.response;
 
 import lombok.Data;
 
@@ -6,6 +6,5 @@ import lombok.Data;
 public class UserSendOrderResponse {
     private String orderId;
     private String dateCreated;
-    private boolean orderStatus;
     private String riderName;
 }

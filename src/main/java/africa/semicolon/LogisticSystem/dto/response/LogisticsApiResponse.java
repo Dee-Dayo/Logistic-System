@@ -1,4 +1,4 @@
-package africa.semicolon.LogisticSystem.dto.requests.response;
+package africa.semicolon.LogisticSystem.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

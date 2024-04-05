@@ -3,11 +3,12 @@ package africa.semicolon.LogisticSystem.utils;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.User;
-import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserLoginResponse;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserRegisterResponse;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserSendOrderResponse;
+import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserSendOrderResponse;
 
 import java.time.format.DateTimeFormatter;
 
@@ -43,17 +44,26 @@ public class Mapper {
          UserSendOrderResponse response = new UserSendOrderResponse();
          response.setOrderId(order.getId());
          response.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
-         response.setOrderStatus(order.isPending());
          response.setRiderName(order.getIsAssignedTo().getFirstName());
          return response;
     }
 
-
-    public static Order requestMap(SendOrderRequest sendOrderRequest){
-         Order order = new Order();
-         order.setSender(sendOrderRequest.getSender());
-         order.setReceiver(sendOrderRequest.getReceiver());
-         order.setProduct(sendOrderRequest.getProduct());
-         return order;
+    public static OrderPaymentResponse orderConfirmationResponseMap(Order order){
+        OrderPaymentResponse orderPaymentResponse = new OrderPaymentResponse();
+        orderPaymentResponse.setOrderId(order.getId());
+        orderPaymentResponse.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
+        orderPaymentResponse.setRiderName(order.getIsAssignedTo().getFirstName());
+        orderPaymentResponse.setPaymentStatus(order.isPaid());
+        orderPaymentResponse.setDateCollected(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCollected()));
+        return orderPaymentResponse;
     }
+
+
+//    public static Order requestMap(SendOrderRequest sendOrderRequest){
+//         Order order = new Order();
+//         order.setSenderPhone(sendOrderRequest.getSenderPhone());
+//         order.setReceiverPhone(sendOrderRequest.getReceiverPhone());
+//         order.setProduct(sendOrderRequest.getProduct());
+//         return order;
+//    }
 }

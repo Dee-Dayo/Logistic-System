@@ -11,7 +11,9 @@ public class Order {
     private String id;
     private Product product;
     private User sender;
-    private User receiver;
+    private String receiverName;
+    private String receiverPhone;
+    private String receiverAddress;
     private Rider isAssignedTo;
     private boolean isPaid;
     private boolean isPending;

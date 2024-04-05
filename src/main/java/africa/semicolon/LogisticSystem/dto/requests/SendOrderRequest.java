@@ -1,4 +1,4 @@
-package africa.semicolon.LogisticSystem.dto.requests.requests;
+package africa.semicolon.LogisticSystem.dto.requests;
 
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
@@ -6,8 +6,9 @@ import lombok.Data;
 
 @Data
 public class SendOrderRequest {
-    private User sender;
+    private String senderPhone;
     private Product product;
-    private User receiver;
-//    private boolean isPaid;
+    private String receiverName;
+    private String receiverPhone;
+    private String receiverAddress;
 }

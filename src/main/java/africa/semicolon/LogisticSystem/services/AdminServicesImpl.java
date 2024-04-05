@@ -4,9 +4,10 @@ import africa.semicolon.LogisticSystem.data.models.*;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
-import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserRegisterResponse;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,20 +46,25 @@ public class AdminServicesImpl implements AdminServices{
         rider1.setFirstName("Moh");
         rider1.setLastName("Baba");
         rider1.setAvailable(true);
+        rider1.setId("1");
 
         Rider rider2 = new Rider();
         rider2.setFirstName("Beejay");
         rider2.setLastName("Queue");
         rider2.setAvailable(true);
+        rider2.setId("2");
+
 
         admin.getRiders().add(rider1);
         admin.getRiders().add(rider2);
 
-//        riderService.save(rider1);
-//        riderService.save(rider2);
 
-        riderRepository.save(rider1);
-        riderRepository.save(rider2);
+
+        riderService.save(rider1);
+        riderService.save(rider2);
+
+//        riderRepository.save(rider1);
+//        riderRepository.save(rider2);
     }
 
     @Override
@@ -88,15 +94,27 @@ public class AdminServicesImpl implements AdminServices{
     }
 
     @Override
-    public void takeOrder(Order order) {
-        orderRepository.save(order);
-
+    public Order takeOrder(User user, SendOrderRequest sendOrderRequest) {
         Rider rider = riderService.findRider();
         rider.setAvailable(false);
         riderRepository.save(rider);
 
-        riderService.assignOrder(rider, order);
+        Order order = new Order();
+        order.setSender(user);
+        order.setProduct(sendOrderRequest.getProduct());
+        order.setReceiverName(sendOrderRequest.getReceiverName());
+        order.setReceiverPhone(sendOrderRequest.getReceiverPhone());
+        order.setReceiverName(sendOrderRequest.getReceiverAddress());
+        order.setIsAssignedTo(rider);
+
         orderRepository.save(order);
+
+        return order;
+
+
+//
+//        riderService.assignOrder(rider, order);
+//        orderRepository.save(order);
 
 
     }
@@ -126,11 +144,11 @@ public class AdminServicesImpl implements AdminServices{
             orderRepository.save(order);
         } else throw new OrderPaymentNotMade("Payment not made");
 
-        riderService.sendOrder(order);
-        orderRepository.save(order);
-        userRepository.save(order.getSender());
-        userRepository.save(order.getReceiver());
-        riderRepository.save(order.getIsAssignedTo());
+//        riderService.sendOrder(order);
+//        orderRepository.save(order);
+//        userRepository.save(order.getSender());
+//        userRepository.save(order.getReceiver());
+//        riderRepository.save(order.getIsAssignedTo());
     }
 
 

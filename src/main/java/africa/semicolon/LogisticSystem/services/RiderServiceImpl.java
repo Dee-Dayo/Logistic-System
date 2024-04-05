@@ -45,18 +45,18 @@ public class RiderServiceImpl implements RiderService{
         riderRepository.save(rider);
     }
 
-    @Override
-    public void sendOrder(Order order) {
-        User sender = order.getSender();
-        Rider rider = order.getIsAssignedTo();
-        User receiver = order.getReceiver();
-
-        order.setPending(false);
-        order.setDelivered(true);
-        order.setDateCollected(LocalDateTime.now());
-
-        rider.setAvailable(true);
-    }
+//    @Override
+//    public void sendOrder(Order order) {
+//        User sender = order.getSender();
+//        Rider rider = order.getIsAssignedTo();
+//        User receiver = order.getReceiver();
+//
+//        order.setPending(false);
+//        order.setDelivered(true);
+//        order.setDateCollected(LocalDateTime.now());
+//
+//        rider.setAvailable(true);
+//    }
 
 
 }

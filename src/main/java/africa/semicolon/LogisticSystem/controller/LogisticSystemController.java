@@ -1,19 +1,16 @@
 package africa.semicolon.LogisticSystem.controller;
 
-import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.requests.UserLoginRequest;
-import africa.semicolon.LogisticSystem.dto.requests.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.requests.response.LogisticsApiResponse;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserLoginResponse;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserRegisterResponse;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserSendOrderResponse;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.response.*;
 import africa.semicolon.LogisticSystem.exceptions.LogisticSystemsExceptions;
 import africa.semicolon.LogisticSystem.services.AdminServices;
 import africa.semicolon.LogisticSystem.services.OrderService;
 import africa.semicolon.LogisticSystem.services.RiderService;
 import africa.semicolon.LogisticSystem.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +60,16 @@ public class LogisticSystemController {
             return new ResponseEntity<>(new LogisticsApiResponse(true, response), CREATED);
         } catch (LogisticSystemsExceptions error){
             return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/make_payment")
+    public ResponseEntity<?> orderPayment(@RequestBody OrderPaymentRequest orderPaymentRequest){
+        try {
+            OrderPaymentResponse response = userServices.makePayment(orderPaymentRequest);
+            return new ResponseEntity<>(new LogisticsApiResponse(true, response), ACCEPTED);
+        } catch (LogisticSystemsExceptions error){
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
         }
     }
 

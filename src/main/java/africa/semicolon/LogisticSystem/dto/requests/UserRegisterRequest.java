@@ -1,4 +1,4 @@
-package africa.semicolon.LogisticSystem.dto.requests.requests;
+package africa.semicolon.LogisticSystem.dto.requests;
 
 import africa.semicolon.LogisticSystem.data.models.Product;
 import lombok.Data;

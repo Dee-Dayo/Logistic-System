@@ -4,11 +4,12 @@ import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
-import africa.semicolon.LogisticSystem.dto.requests.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.requests.SendOrderRequest;
-import africa.semicolon.LogisticSystem.dto.requests.requests.UserLoginRequest;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserLoginResponse;
-import africa.semicolon.LogisticSystem.dto.requests.response.UserSendOrderResponse;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
+import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserSendOrderResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,17 +55,19 @@ public class UserServicesImpl implements UserServices{
 
     @Override
     public UserSendOrderResponse sendOrder(SendOrderRequest sendOrderRequest) {
-        User sender = userRepository.findByPhoneNumber(sendOrderRequest.getSender().getPhoneNumber());
+        User sender = userRepository.findByPhoneNumber(sendOrderRequest.getSenderPhone());
+
         validateSenderIsLoggedIn(sender);
         Product product = sendOrderRequest.getProduct();
         validateProduct(product);;
 
-        validateReceiver(sendOrderRequest.getReceiver().getPhoneNumber());
-        validateReceiverAddress(sendOrderRequest.getReceiver().getAddress());
-        validateReceiverName(sendOrderRequest.getReceiver().getFirstName());
+        validateReceiver(sendOrderRequest.getReceiverPhone());
+        validateReceiverAddress(sendOrderRequest.getReceiverAddress());
+        validateReceiverName(sendOrderRequest.getReceiverName());
 
-        Order order = requestMap(sendOrderRequest);
-        adminServices.takeOrder(order);
+
+//        Order order = requestMap(sendOrderRequest);
+        Order order = adminServices.takeOrder(sender, sendOrderRequest);
 
         return sendOrderResponseMap(order);
     }
@@ -83,9 +86,13 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public void makePayment(OrderPaymentRequest orderPaymentRequest) {
+    public OrderPaymentResponse makePayment(OrderPaymentRequest orderPaymentRequest) {
 //        Order order = trackOrderById(orderPaymentRequest.getOrderId());
         adminServices.sendOrder(orderPaymentRequest);
+
+        Order order = trackOrderById(orderPaymentRequest.getOrderId());
+
+        return orderConfirmationResponseMap(order);
     }
 
     private void validateReceiver(String phoneNumber) {
@@ -98,7 +105,8 @@ public class UserServicesImpl implements UserServices{
     }
 
     private void validateSenderIsLoggedIn(User user) {
-        if (!user.isLoggedIn()) throw new NotLoggedInException("You must login to send order");
+        if (user == null) throw new UserNotFoundException("user not found");
+//        if (!user.isLoggedIn()) throw new NotLoggedInException("You must login to send order");
     }
 
 }
