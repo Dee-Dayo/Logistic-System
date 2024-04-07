@@ -99,7 +99,11 @@ public class AdminServicesImpl implements AdminServices{
         rider.setAvailable(false);
         riderRepository.save(rider);
 
+        Product product = sendOrderRequest.getProduct();
+
+
         Order order = new Order();
+        setOrderPrice(order, product);
         order.setSender(user);
         order.setProduct(sendOrderRequest.getProduct());
         order.setReceiverName(sendOrderRequest.getReceiverName());
@@ -112,11 +116,16 @@ public class AdminServicesImpl implements AdminServices{
         return order;
 
 
-//
-//        riderService.assignOrder(rider, order);
-//        orderRepository.save(order);
+    }
 
-
+    private void setOrderPrice(Order order, Product product) {
+        switch (product){
+            case TV -> order.setAmount(5000);
+            case FOOD -> order.setAmount(1500);
+            case CLOTH -> order.setAmount(2000);
+            case LAPTOP -> order.setAmount(8000);
+            default -> order.setAmount(10000);
+        }
     }
 
     @Override
@@ -138,11 +147,16 @@ public class AdminServicesImpl implements AdminServices{
     public void sendOrder(OrderPaymentRequest orderPaymentRequest) {
         Order order = orderService.getOrderById(orderPaymentRequest.getOrderId());
 
-        if (orderPaymentRequest.isPaid()){
+        if (orderPaymentRequest.getOrderAmount() >= order.getAmount()){
             order.setPaid(true);
             order.setDateCollected(LocalDateTime.now());
             orderRepository.save(order);
-        } else throw new OrderPaymentNotMade("Payment not made");
+        } else throw new OrderPaymentNotMade("Insufficient amount for order");
+
+        order.setDelivered(true);
+        order.setDateDelivered(LocalDateTime.now().plusHours(2));
+        orderRepository.save(order);
+
 
 //        riderService.sendOrder(order);
 //        orderRepository.save(order);

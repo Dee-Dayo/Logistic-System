@@ -4,10 +4,12 @@ import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
+import africa.semicolon.LogisticSystem.dto.requests.CheckStatusRequest;
 import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
 import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
+import africa.semicolon.LogisticSystem.dto.response.OrderStatusResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserSendOrderResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
@@ -56,7 +58,6 @@ public class UserServicesImpl implements UserServices{
     @Override
     public UserSendOrderResponse sendOrder(SendOrderRequest sendOrderRequest) {
         User sender = userRepository.findByPhoneNumber(sendOrderRequest.getSenderPhone());
-
         validateSenderIsLoggedIn(sender);
         Product product = sendOrderRequest.getProduct();
         validateProduct(product);;
@@ -81,7 +82,12 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public Order trackOrderById(String id) {
+    public OrderStatusResponse trackOrderById(CheckStatusRequest orderId) {
+        Order order = trackOrderBy(orderId.getOrderId());
+        return checkStatusResponseMap(order);
+    }
+
+    private Order trackOrderBy(String id){
         return orderService.getOrderById(id);
     }
 
@@ -90,7 +96,7 @@ public class UserServicesImpl implements UserServices{
 //        Order order = trackOrderById(orderPaymentRequest.getOrderId());
         adminServices.sendOrder(orderPaymentRequest);
 
-        Order order = trackOrderById(orderPaymentRequest.getOrderId());
+        Order order = trackOrderBy(orderPaymentRequest.getOrderId());
 
         return orderConfirmationResponseMap(order);
     }
@@ -106,7 +112,7 @@ public class UserServicesImpl implements UserServices{
 
     private void validateSenderIsLoggedIn(User user) {
         if (user == null) throw new UserNotFoundException("user not found");
-//        if (!user.isLoggedIn()) throw new NotLoggedInException("You must login to send order");
+        if (!user.isLoggedIn()) throw new NotLoggedInException("You must login to send order");
     }
 
 }

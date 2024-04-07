@@ -5,10 +5,7 @@ import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserSendOrderResponse;
+import africa.semicolon.LogisticSystem.dto.response.*;
 
 import java.time.format.DateTimeFormatter;
 
@@ -44,6 +41,7 @@ public class Mapper {
          UserSendOrderResponse response = new UserSendOrderResponse();
          response.setOrderId(order.getId());
          response.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
+         response.setAmount(order.getAmount());
          response.setRiderName(order.getIsAssignedTo().getFirstName());
          return response;
     }
@@ -58,12 +56,15 @@ public class Mapper {
         return orderPaymentResponse;
     }
 
+    public static OrderStatusResponse checkStatusResponseMap (Order order){
+         OrderStatusResponse orderStatusResponse = new OrderStatusResponse();
+         orderStatusResponse.setOrderId(order.getId());
+         orderStatusResponse.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
+         orderStatusResponse.setPaymentMade(order.isPaid());
+         orderStatusResponse.setDateCollected(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCollected()));
+         orderStatusResponse.setCompleted(order.isDelivered());
+         orderStatusResponse.setDateDelivered(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateDelivered()));
+        return orderStatusResponse;
+     }
 
-//    public static Order requestMap(SendOrderRequest sendOrderRequest){
-//         Order order = new Order();
-//         order.setSenderPhone(sendOrderRequest.getSenderPhone());
-//         order.setReceiverPhone(sendOrderRequest.getReceiverPhone());
-//         order.setProduct(sendOrderRequest.getProduct());
-//         return order;
-//    }
 }

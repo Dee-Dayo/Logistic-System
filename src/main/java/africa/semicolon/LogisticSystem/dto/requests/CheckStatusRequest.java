@@ -3,7 +3,6 @@ package africa.semicolon.LogisticSystem.dto.requests;
 import lombok.Data;
 
 @Data
-public class OrderPaymentRequest {
+public class CheckStatusRequest {
     private String orderId;
-    private int orderAmount;
 }

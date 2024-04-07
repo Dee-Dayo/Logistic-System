@@ -15,9 +15,11 @@ public class Order {
     private String receiverPhone;
     private String receiverAddress;
     private Rider isAssignedTo;
+    private int amount;
     private boolean isPaid;
     private boolean isPending;
     private boolean isDelivered;
     private LocalDateTime dateCreated = LocalDateTime.now();
     private LocalDateTime dateCollected;
+    private LocalDateTime dateDelivered;
 }
