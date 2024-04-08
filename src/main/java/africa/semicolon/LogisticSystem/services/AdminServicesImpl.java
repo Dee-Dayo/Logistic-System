@@ -28,7 +28,6 @@ public class AdminServicesImpl implements AdminServices{
     OrderRepository orderRepository;
     @Autowired
     RiderRepository riderRepository;
-
     @Autowired
     RiderService riderService;
     @Autowired
@@ -54,17 +53,11 @@ public class AdminServicesImpl implements AdminServices{
         rider2.setAvailable(true);
         rider2.setId("2");
 
-
         admin.getRiders().add(rider1);
         admin.getRiders().add(rider2);
 
-
-
         riderService.save(rider1);
         riderService.save(rider2);
-
-//        riderRepository.save(rider1);
-//        riderRepository.save(rider2);
     }
 
     @Override
@@ -101,7 +94,6 @@ public class AdminServicesImpl implements AdminServices{
 
         Product product = sendOrderRequest.getProduct();
 
-
         Order order = new Order();
         setOrderPrice(order, product);
         order.setSender(user);
@@ -114,8 +106,6 @@ public class AdminServicesImpl implements AdminServices{
         orderRepository.save(order);
 
         return order;
-
-
     }
 
     private void setOrderPrice(Order order, Product product) {
@@ -156,37 +146,7 @@ public class AdminServicesImpl implements AdminServices{
         order.setDelivered(true);
         order.setDateDelivered(LocalDateTime.now().plusHours(2));
         orderRepository.save(order);
-
-
-//        riderService.sendOrder(order);
-//        orderRepository.save(order);
-//        userRepository.save(order.getSender());
-//        userRepository.save(order.getReceiver());
-//        riderRepository.save(order.getIsAssignedTo());
     }
-
-
-    private void assignOrder(Rider rider, Order order) {
-        rider.setAvailable(false);
-        order.setIsAssignedTo(rider);
-
-//        User sender = order.getSender();
-//        Product product = order.getProduct();
-//        User receiver = order.getReceiver();
-//
-//        sender.setProduct(null);
-//        sender.setSent(true);
-//        receiver.setProduct(product);
-//        receiver.setReceived(true);
-//
-//        order.setDelivered(true);
-//        orderRepository.delete(order);
-//        rider.setAvailable(true);
-//
-//        userRepository.save(sender);
-//        userRepository.save(receiver);
-    }
-
 
     private void validateLength(String phoneNumber) {
         String number = phoneNumber.strip();
@@ -197,5 +157,4 @@ public class AdminServicesImpl implements AdminServices{
         boolean userExists = userRepository.existsByPhoneNumber(phoneNumber);
         if (userExists) throw new UserAlreadyExistException("Phone number already exist");
     }
-
 }

@@ -66,8 +66,6 @@ public class UserServicesImpl implements UserServices{
         validateReceiverAddress(sendOrderRequest.getReceiverAddress());
         validateReceiverName(sendOrderRequest.getReceiverName());
 
-
-//        Order order = requestMap(sendOrderRequest);
         Order order = adminServices.takeOrder(sender, sendOrderRequest);
 
         return sendOrderResponseMap(order);
@@ -93,7 +91,6 @@ public class UserServicesImpl implements UserServices{
 
     @Override
     public OrderPaymentResponse makePayment(OrderPaymentRequest orderPaymentRequest) {
-//        Order order = trackOrderById(orderPaymentRequest.getOrderId());
         adminServices.sendOrder(orderPaymentRequest);
 
         Order order = trackOrderBy(orderPaymentRequest.getOrderId());

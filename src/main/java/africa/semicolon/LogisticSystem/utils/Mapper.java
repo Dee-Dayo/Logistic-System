@@ -66,5 +66,4 @@ public class Mapper {
          orderStatusResponse.setDateDelivered(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateDelivered()));
         return orderStatusResponse;
      }
-
 }

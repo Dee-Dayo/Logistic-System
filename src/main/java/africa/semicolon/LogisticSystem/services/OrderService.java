@@ -5,6 +5,5 @@ import africa.semicolon.LogisticSystem.data.models.User;
 
 public interface OrderService {
     Order getOrderByUser(User sender);
-
     Order getOrderById(String id);
 }

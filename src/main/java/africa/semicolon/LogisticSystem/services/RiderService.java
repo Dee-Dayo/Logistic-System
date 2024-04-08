@@ -5,12 +5,7 @@ import africa.semicolon.LogisticSystem.data.models.Rider;
 
 public interface RiderService {
     Rider findRider();
-
     void assignOrder(Rider rider, Order order);
-
     int findNoOfAvailableRiders();
-
     void save(Rider rider1);
-
-//    void sendOrder(Order order);
 }

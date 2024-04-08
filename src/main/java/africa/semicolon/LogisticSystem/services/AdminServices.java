@@ -8,18 +8,11 @@ import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 
 public interface AdminServices {
-
     Long findNoOfUsers();
-
     UserRegisterResponse register(UserRegisterRequest userRegisterRequest);
-
     int findNoOfRiders();
-
     Order takeOrder(User user, SendOrderRequest sendOrderRequest);
-
     Long noOfOrders();
-
     int findAvailableRiders();
-
     void sendOrder(OrderPaymentRequest orderPaymentRequest);
 }
