@@ -8,7 +8,6 @@ import africa.semicolon.LogisticSystem.services.OrderService;
 import africa.semicolon.LogisticSystem.services.RiderService;
 import africa.semicolon.LogisticSystem.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +37,7 @@ public class LogisticSystemController {
         }
     }
 
-    @PostMapping("/login")
+    @PatchMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
         try {
             UserLoginResponse response = userServices.login(userLoginRequest);
@@ -58,7 +57,7 @@ public class LogisticSystemController {
         }
     }
 
-    @PostMapping("/make_payment")
+    @PutMapping("/make_payment")
     public ResponseEntity<?> orderPayment(@RequestBody OrderPaymentRequest orderPaymentRequest){
         try {
             OrderPaymentResponse response = userServices.makePayment(orderPaymentRequest);

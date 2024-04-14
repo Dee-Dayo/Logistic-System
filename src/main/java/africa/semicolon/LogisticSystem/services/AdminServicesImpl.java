@@ -102,6 +102,7 @@ public class AdminServicesImpl implements AdminServices{
         order.setReceiverPhone(sendOrderRequest.getReceiverPhone());
         order.setReceiverName(sendOrderRequest.getReceiverAddress());
         order.setIsAssignedTo(rider);
+        order.setPending(true);
 
         orderRepository.save(order);
 
@@ -143,9 +144,18 @@ public class AdminServicesImpl implements AdminServices{
             orderRepository.save(order);
         } else throw new OrderPaymentNotMade("Insufficient amount for order");
 
+
+        try {Thread.sleep(60000);}
+        catch (InterruptedException e) { e.printStackTrace(); }
+
         order.setDelivered(true);
         order.setDateDelivered(LocalDateTime.now().plusHours(2));
         orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
     private void validateLength(String phoneNumber) {

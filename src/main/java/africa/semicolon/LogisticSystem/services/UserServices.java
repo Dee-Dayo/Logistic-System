@@ -1,5 +1,6 @@
 package africa.semicolon.LogisticSystem.services;
 
+import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.dto.requests.CheckStatusRequest;
 import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
@@ -9,6 +10,8 @@ import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
 import africa.semicolon.LogisticSystem.dto.response.OrderStatusResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserSendOrderResponse;
+
+import java.util.List;
 
 public interface UserServices {
 

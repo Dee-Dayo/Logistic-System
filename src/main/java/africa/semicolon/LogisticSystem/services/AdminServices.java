@@ -7,6 +7,8 @@ import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 
+import java.util.List;
+
 public interface AdminServices {
     Long findNoOfUsers();
     UserRegisterResponse register(UserRegisterRequest userRegisterRequest);
@@ -15,4 +17,5 @@ public interface AdminServices {
     Long noOfOrders();
     int findAvailableRiders();
     void sendOrder(OrderPaymentRequest orderPaymentRequest);
+    List<Order> getAllOrders();
 }

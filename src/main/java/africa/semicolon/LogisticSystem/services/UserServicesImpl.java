@@ -16,6 +16,8 @@ import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static africa.semicolon.LogisticSystem.utils.Mapper.*;
 
 @Service

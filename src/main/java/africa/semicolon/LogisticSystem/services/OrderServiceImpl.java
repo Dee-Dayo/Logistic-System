@@ -7,6 +7,7 @@ import africa.semicolon.LogisticSystem.exceptions.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,5 +28,10 @@ public class OrderServiceImpl implements OrderService{
         Optional<Order> order = orderRepository.findById(id);
         if (order.isEmpty()) throw new OrderNotFoundException("Order not found");
         return order.get();
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 }
