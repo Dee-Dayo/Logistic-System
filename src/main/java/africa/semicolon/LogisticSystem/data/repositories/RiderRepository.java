@@ -8,4 +8,6 @@ import java.util.List;
 public interface RiderRepository extends MongoRepository<Rider,String> {
     List<Rider> findByIsAvailableTrue();
     Rider findByOrder();
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }

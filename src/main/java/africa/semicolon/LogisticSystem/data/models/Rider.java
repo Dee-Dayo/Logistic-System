@@ -10,6 +10,8 @@ public class Rider {
     private String id;
     private String firstName;
     private String lastName;
+    private String phoneNumber;
+    private String password;
     private Order order;
     private boolean isAvailable;
 }

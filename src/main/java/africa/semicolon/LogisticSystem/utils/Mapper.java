@@ -2,7 +2,9 @@ package africa.semicolon.LogisticSystem.utils;
 
 
 import africa.semicolon.LogisticSystem.data.models.Order;
+import africa.semicolon.LogisticSystem.data.models.Rider;
 import africa.semicolon.LogisticSystem.data.models.User;
+import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.response.*;
@@ -10,6 +12,16 @@ import africa.semicolon.LogisticSystem.dto.response.*;
 import java.time.format.DateTimeFormatter;
 
 public class Mapper {
+
+    public static Rider requestMap(RiderRegisterRequest riderRegisterRequest){
+        Rider rider = new Rider();
+        rider.setFirstName(riderRegisterRequest.getFirstName());
+        rider.setLastName(riderRegisterRequest.getLastName());
+        rider.setPhoneNumber(riderRegisterRequest.getPhoneNumber());
+        rider.setPassword(riderRegisterRequest.getPassword());
+        rider.setAvailable(true);
+        return rider;
+    }
 
      public static User requestMap(UserRegisterRequest userRegisterRequest){
         User user = new User();
@@ -27,6 +39,15 @@ public class Mapper {
         response.setPhoneNumber(user.getPhoneNumber());
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
+        return response;
+    }
+
+    public static RiderRegisterResponse responseMap(Rider rider){
+        RiderRegisterResponse response = new RiderRegisterResponse();
+        response.setId(rider.getId());
+        response.setPhoneNumber(rider.getPhoneNumber());
+        response.setFirstName(rider.getFirstName());
+        response.setLastName(rider.getLastName());
         return response;
     }
 

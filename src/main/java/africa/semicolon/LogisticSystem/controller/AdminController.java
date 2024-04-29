@@ -2,21 +2,22 @@ package africa.semicolon.LogisticSystem.controller;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
+import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.response.LogisticsApiResponse;
 import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
+import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 import africa.semicolon.LogisticSystem.exceptions.LogisticSystemsExceptions;
 import africa.semicolon.LogisticSystem.services.AdminServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestController
 @RequestMapping("/api/DeeLogistics")
