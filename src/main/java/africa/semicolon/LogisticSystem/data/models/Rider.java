@@ -12,6 +12,7 @@ public class Rider {
     private String lastName;
     private String phoneNumber;
     private String password;
+    private boolean isLoggedIn;
     private Order order;
     private boolean isAvailable;
 }

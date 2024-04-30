@@ -4,19 +4,36 @@ import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Rider;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
+import africa.semicolon.LogisticSystem.dto.requests.RiderLoginRequest;
+import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
+import africa.semicolon.LogisticSystem.dto.response.RiderLoginResponse;
+import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
+import africa.semicolon.LogisticSystem.exceptions.InvalidPasswordException;
 import africa.semicolon.LogisticSystem.exceptions.RiderAlreadyExist;
 import africa.semicolon.LogisticSystem.exceptions.RiderNotAvailableException;
+import africa.semicolon.LogisticSystem.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static africa.semicolon.LogisticSystem.utils.Mapper.loginResponseMap;
+
 @Service
 public class RiderServiceImpl implements RiderService{
 
     @Autowired
     RiderRepository riderRepository;
+
+    @Override
+    public RiderLoginResponse login(RiderLoginRequest riderLoginRequest) {
+        Rider rider = findRiderByNumber(riderLoginRequest.getPhoneNumber());
+        validatePassword(riderLoginRequest);
+        rider.setLoggedIn(true);
+        riderRepository.save(rider);
+        return loginResponseMap(rider);
+    }
 
     @Override
     public Rider findRider() {
@@ -43,5 +60,16 @@ public class RiderServiceImpl implements RiderService{
     public void save(Rider rider) {
         if(riderRepository.existsById(rider.getId())) throw new RiderAlreadyExist("Rider already exist");
         riderRepository.save(rider);
+    }
+
+    public Rider findRiderByNumber(String phoneNumber) {
+        Rider rider = riderRepository.findByPhoneNumber(phoneNumber);
+        if (rider == null) throw new UserNotFoundException("Phone number does not exist");
+        return rider;
+    }
+
+    private void validatePassword(RiderLoginRequest riderLoginRequest) {
+       Rider rider = findRiderByNumber(riderLoginRequest.getPhoneNumber());
+        if(!rider.getPassword().equals(riderLoginRequest.getPassword())) throw new InvalidPasswordException("Wrong username or password");
     }
 }

@@ -1,14 +1,18 @@
 package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
+import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
+import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.exceptions.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -33,5 +37,25 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    @Override
+    public Order setOrder(User user, SendOrderRequest sendOrderRequest) {
+        Order order = requestMap(user, sendOrderRequest);
+        Product product = sendOrderRequest.getProduct();
+        setOrderPrice(order, product);
+        orderRepository.save(order);
+
+        return order;
+    }
+
+    private void setOrderPrice(Order order, Product product) {
+        switch (product){
+            case TV -> order.setAmount(5000);
+            case FOOD -> order.setAmount(1500);
+            case CLOTH -> order.setAmount(2000);
+            case LAPTOP -> order.setAmount(8000);
+            default -> order.setAmount(10000);
+        }
     }
 }

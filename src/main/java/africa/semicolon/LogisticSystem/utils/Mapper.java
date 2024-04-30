@@ -33,6 +33,17 @@ public class Mapper {
         return user;
     }
 
+    public static Order requestMap(User user, SendOrderRequest sendOrderRequest){
+        Order order = new Order();
+        order.setSender(user);
+        order.setProduct(sendOrderRequest.getProduct());
+        order.setReceiverName(sendOrderRequest.getReceiverName());
+        order.setReceiverPhone(sendOrderRequest.getReceiverPhone());
+        order.setReceiverAddress(sendOrderRequest.getReceiverAddress());
+        order.setPending(true);
+        return order;
+    }
+
     public static UserRegisterResponse responseMap(User user){
         UserRegisterResponse response = new UserRegisterResponse();
         response.setId(user.getId());
@@ -58,12 +69,19 @@ public class Mapper {
         return response;
     }
 
+    public static RiderLoginResponse loginResponseMap(Rider rider){
+        RiderLoginResponse response = new RiderLoginResponse();
+        response.setFirstName(rider.getFirstName());
+        response.setId(rider.getId());
+        return response;
+    }
+
     public static UserSendOrderResponse sendOrderResponseMap(Order order){
          UserSendOrderResponse response = new UserSendOrderResponse();
          response.setOrderId(order.getId());
          response.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
          response.setAmount(order.getAmount());
-         response.setRiderName(order.getIsAssignedTo().getFirstName());
+//         response.setRiderName(order.getIsAssignedTo().getFirstName());
          return response;
     }
 

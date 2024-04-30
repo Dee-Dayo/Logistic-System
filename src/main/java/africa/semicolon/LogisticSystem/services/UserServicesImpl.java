@@ -48,7 +48,7 @@ public class UserServicesImpl implements UserServices{
 
     private void validatePassword(UserLoginRequest userLoginRequest) {
         User user = findUserByNumber(userLoginRequest.getPhoneNumber());
-        if(!user.getPassword().equals(userLoginRequest.getPassword())) throw new InvalidPasswordException("Wrong password");
+        if(!user.getPassword().equals(userLoginRequest.getPassword())) throw new InvalidPasswordException("Wrong username or password");
     }
 
     public User findUserByNumber(String username) {

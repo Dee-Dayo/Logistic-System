@@ -77,35 +77,17 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public Order takeOrder(User user, SendOrderRequest sendOrderRequest) {
-        Rider rider = riderService.findRider();
-        rider.setAvailable(false);
-        riderRepository.save(rider);
+        riderService.findRider();
+//        rider.setAvailable(false);
+//        riderRepository.save(rider);
 
-        Product product = sendOrderRequest.getProduct();
+        Order order = orderService.setOrder(user, sendOrderRequest);
 
-        Order order = new Order();
-        setOrderPrice(order, product);
-        order.setSender(user);
-        order.setProduct(sendOrderRequest.getProduct());
-        order.setReceiverName(sendOrderRequest.getReceiverName());
-        order.setReceiverPhone(sendOrderRequest.getReceiverPhone());
-        order.setReceiverName(sendOrderRequest.getReceiverAddress());
-        order.setIsAssignedTo(rider);
-        order.setPending(true);
 
-        orderRepository.save(order);
+//        order.setIsAssignedTo(rider);
+//        orderRepository.save(order);
 
         return order;
-    }
-
-    private void setOrderPrice(Order order, Product product) {
-        switch (product){
-            case TV -> order.setAmount(5000);
-            case FOOD -> order.setAmount(1500);
-            case CLOTH -> order.setAmount(2000);
-            case LAPTOP -> order.setAmount(8000);
-            default -> order.setAmount(10000);
-        }
     }
 
     @Override
@@ -116,11 +98,11 @@ public class AdminServicesImpl implements AdminServices{
     @Override
     public int findAvailableRiders() {
         List<Rider> riders = riderRepository.findAll();
-        List<Rider> availale = new ArrayList<>();
+        List<Rider> available = new ArrayList<>();
         for (Rider rider : riders){
-            if (rider.isAvailable()) availale.add(rider);
+            if (rider.isAvailable()) available.add(rider);
         }
-        return availale.size();
+        return available.size();
     }
 
     @Override
@@ -144,6 +126,8 @@ public class AdminServicesImpl implements AdminServices{
 
     @Override
     public List<Order> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        if (orders.isEmpty()) throw new NoOrderException("No orders found");
         return orderRepository.findAll();
     }
 

@@ -37,43 +37,43 @@ public class UserController {
         }
     }
 
-//    @PatchMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
-//        try {
-//            UserLoginResponse response = userServices.login(userLoginRequest);
-//            return new ResponseEntity<>(new LogisticsApiResponse(true, response), ACCEPTED);
-//        } catch (LogisticSystemsExceptions error){
-//            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
-//        }
-//    }
-//
-//    @PostMapping("/send_order")
-//    public ResponseEntity<?> sendOrder(@RequestBody SendOrderRequest sendOrderRequest){
-//        try {
-//            UserSendOrderResponse response = userServices.sendOrder(sendOrderRequest);
-//            return new ResponseEntity<>(new LogisticsApiResponse(true, response), CREATED);
-//        } catch (LogisticSystemsExceptions error){
-//            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), BAD_REQUEST);
-//        }
-//    }
-//
-//    @PutMapping("/make_payment")
-//    public ResponseEntity<?> orderPayment(@RequestBody OrderPaymentRequest orderPaymentRequest){
-//        try {
-//            OrderPaymentResponse response = userServices.makePayment(orderPaymentRequest);
-//            return new ResponseEntity<>(new LogisticsApiResponse(true, response), ACCEPTED);
-//        } catch (LogisticSystemsExceptions error){
-//            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
-//        }
-//    }
-//
-//    @GetMapping("/get_order_status")
-//    public ResponseEntity<?> orderStatus(@RequestBody CheckStatusRequest orderId){
-//        try {
-//            OrderStatusResponse response = userServices.trackOrderById(orderId);
-//            return new ResponseEntity<>(new LogisticsApiResponse(true, response), FOUND);
-//        } catch (LogisticSystemsExceptions error){
-//            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), BAD_REQUEST);
-//        }
-//    }
+    @PatchMapping("/login-user")
+    public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
+        try {
+            UserLoginResponse response = userServices.login(userLoginRequest);
+            return new ResponseEntity<>(new LogisticsApiResponse(true, response), ACCEPTED);
+        } catch (LogisticSystemsExceptions error){
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
+        }
+    }
+
+    @PostMapping("/send_order")
+    public ResponseEntity<?> sendOrder(@RequestBody SendOrderRequest sendOrderRequest){
+        try {
+            UserSendOrderResponse response = userServices.sendOrder(sendOrderRequest);
+            return new ResponseEntity<>(new LogisticsApiResponse(true, response), CREATED);
+        } catch (LogisticSystemsExceptions error){
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/make_payment")
+    public ResponseEntity<?> orderPayment(@RequestBody OrderPaymentRequest orderPaymentRequest){
+        try {
+            OrderPaymentResponse response = userServices.makePayment(orderPaymentRequest);
+            return new ResponseEntity<>(new LogisticsApiResponse(true, response), ACCEPTED);
+        } catch (LogisticSystemsExceptions error){
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/get_order_status")
+    public ResponseEntity<?> orderStatus(@RequestBody CheckStatusRequest orderId){
+        try {
+            OrderStatusResponse response = userServices.trackOrderById(orderId);
+            return new ResponseEntity<>(new LogisticsApiResponse(true, response), FOUND);
+        } catch (LogisticSystemsExceptions error){
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), BAD_REQUEST);
+        }
+    }
 }
