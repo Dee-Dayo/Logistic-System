@@ -6,6 +6,7 @@ import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.response.OrderResponse;
 import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 
@@ -20,5 +21,6 @@ public interface AdminServices {
     int findAvailableRiders();
     void collectOrderFromSender(OrderPaymentRequest orderPaymentRequest);
     List<Order> getAllOrders();
+    List<OrderResponse> getAllUsersOrders();
     RiderRegisterResponse register(RiderRegisterRequest riderRegisterRequest);
 }

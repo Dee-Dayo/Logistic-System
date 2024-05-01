@@ -1,13 +1,6 @@
 package africa.semicolon.LogisticSystem.controller;
 
-import africa.semicolon.LogisticSystem.data.models.Order;
-import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
-import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.response.LogisticsApiResponse;
-import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
-import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
+import africa.semicolon.LogisticSystem.dto.response.*;
 import africa.semicolon.LogisticSystem.exceptions.LogisticSystemsExceptions;
 import africa.semicolon.LogisticSystem.services.AdminServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestController
 @RequestMapping("/api/DeeLogistics")
@@ -29,7 +21,7 @@ public class AdminController {
     @GetMapping("/all_orders")
      public ResponseEntity<?> allOrders(){
         try {
-            List<Order> orders = adminServices.getAllOrders();
+            List<OrderResponse> orders = adminServices.getAllUsersOrders();
             return new ResponseEntity<>(new LogisticsApiResponse(true, orders), ACCEPTED);
         } catch (LogisticSystemsExceptions error){
             return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);

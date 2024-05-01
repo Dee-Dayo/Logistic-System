@@ -8,6 +8,7 @@ import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
+import africa.semicolon.LogisticSystem.dto.response.OrderResponse;
 import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
@@ -18,8 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
-import static africa.semicolon.LogisticSystem.utils.Mapper.responseMap;
+import static africa.semicolon.LogisticSystem.utils.Mapper.*;
 
 @Service
 public class AdminServicesImpl implements AdminServices {
@@ -120,7 +120,7 @@ public class AdminServicesImpl implements AdminServices {
     }
 
     public void sendAllOrdersInSelectedArea(String address) {
-        List<Order> allOrders = getAllOrders();
+        List<Order> allOrders = this.getAllOrders();
 
         List<Order> selectedOrders = new ArrayList<>();
         for (Order order : allOrders) {
@@ -146,6 +146,19 @@ public class AdminServicesImpl implements AdminServices {
         List<Order> orders = orderRepository.findAll();
         if (orders.isEmpty()) throw new NoOrderException("No orders found");
         return orders;
+    }
+
+    @Override
+    public List<OrderResponse> getAllUsersOrders() {
+        List<Order> orders = orderRepository.findAll();
+        if (orders.isEmpty()) throw new NoOrderException("No orders found");
+
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        for (Order order : orders) {
+            OrderResponse response = orderMap(order);
+            orderResponses.add(response);
+        }
+        return orderResponses;
     }
 
 
