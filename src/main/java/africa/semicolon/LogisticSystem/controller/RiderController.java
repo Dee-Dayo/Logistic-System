@@ -43,4 +43,6 @@ public class RiderController {
             return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
         }
     }
+
+
 }

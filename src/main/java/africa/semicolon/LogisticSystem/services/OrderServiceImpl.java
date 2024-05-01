@@ -4,11 +4,14 @@ import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Product;
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
+import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.exceptions.OrderNotFoundException;
+import africa.semicolon.LogisticSystem.exceptions.OrderPaymentNotMade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +50,18 @@ public class OrderServiceImpl implements OrderService{
         orderRepository.save(order);
 
         return order;
+    }
+
+    @Override
+    public void setPaymentStatus(OrderPaymentRequest orderPaymentRequest) {
+        Order order = getOrderById(orderPaymentRequest.getOrderId());
+
+        if (orderPaymentRequest.getOrderAmount() >= order.getAmount()){
+            order.setPaid(true);
+            order.setPending(true);
+            order.setDatePaymentMade(LocalDateTime.now());
+            orderRepository.save(order);
+        } else throw new OrderPaymentNotMade("Insufficient amount for order");
     }
 
     private void setOrderPrice(Order order, Product product) {

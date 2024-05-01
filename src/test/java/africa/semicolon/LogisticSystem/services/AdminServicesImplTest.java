@@ -92,7 +92,7 @@ class AdminServicesImplTest {
     }
 
     @Test
-    public void userSendOrders_orderRepositoryIsOne(){
+    public void userCollectOrders_orderFromSenderRepositoryIsOne(){
         adminServices.register(userRegisterRequest);
          assertEquals(0, adminServices.noOfOrders());
          assertEquals(2, adminServices.findAvailableRiders());
@@ -111,7 +111,7 @@ class AdminServicesImplTest {
     }
 
     @Test
-    public void userSendOrder_adminAssignRiderToRetrieveOrder(){
+    public void userCollectOrder_adminAssignRiderToRetrieveOrderFromSender(){
         adminServices.register(userRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
         assertEquals(2, adminServices.findAvailableRiders());
@@ -138,7 +138,7 @@ class AdminServicesImplTest {
     }
 
     @Test
-    public void userSendOrder_adminAssignRiderToRetrieveOrder_SenderMakesPayment(){
+    public void userCollectOrder_adminAssignRiderToRetrieveOrder_FromSender_SenderMakesPayment(){
         adminServices.register(userRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
 
@@ -176,7 +176,7 @@ class AdminServicesImplTest {
     }
 
      @Test
-    public void userSendOrder_adminAssignRiderToRetrieveOrder_SenderDoesntMakeFullPayment_ThrowException(){
+    public void userCollectOrder_adminAssignRiderToRetrieveOrder_FromSender_SenderDoesntMakeFullPayment_ThrowException(){
         adminServices.register(userRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
 
@@ -208,7 +208,7 @@ class AdminServicesImplTest {
     }
 
     @Test
-    public void userSendOrder_adminAssignRiderToRetrieveOrder_senderMakesPayment_orderDelivered(){
+    public void userCollectOrder_adminAssignRiderToRetrieveOrder_senderMakesPayment_orderFromSenderDelivered(){
         adminServices.register(userRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
 

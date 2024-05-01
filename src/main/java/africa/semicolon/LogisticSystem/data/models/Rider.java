@@ -4,6 +4,9 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Document("Riders")
 public class Rider {
@@ -13,6 +16,8 @@ public class Rider {
     private String phoneNumber;
     private String password;
     private boolean isLoggedIn;
-    private Order order;
+    private List<Order> orders = new ArrayList<>();
+    private List<Order> completedOrders = new ArrayList<>();
+    private List<Order> pendingOrders = new ArrayList<>();
     private boolean isAvailable;
 }

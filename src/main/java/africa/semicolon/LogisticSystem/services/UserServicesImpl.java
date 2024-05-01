@@ -8,15 +8,10 @@ import africa.semicolon.LogisticSystem.dto.requests.CheckStatusRequest;
 import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
-import africa.semicolon.LogisticSystem.dto.response.OrderPaymentResponse;
-import africa.semicolon.LogisticSystem.dto.response.OrderStatusResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserSendOrderResponse;
+import africa.semicolon.LogisticSystem.dto.response.*;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static africa.semicolon.LogisticSystem.utils.Mapper.*;
 
@@ -41,7 +36,9 @@ public class UserServicesImpl implements UserServices{
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
         User user = findUserByNumber(userLoginRequest.getPhoneNumber());
         validatePassword(userLoginRequest);
-        user.setLoggedIn(true);
+        if (!user.isLoggedIn()) {
+            user.setLoggedIn(true);
+        } else throw new AlreadyLoggedInException("UserAlready logged in");
         userRepository.save(user);
         return loginResponseMap(user);
     }
@@ -82,8 +79,10 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public OrderStatusResponse trackOrderById(CheckStatusRequest orderId) {
+    public Object trackOrderById(CheckStatusRequest orderId) {
         Order order = trackOrderBy(orderId.getOrderId());
+        if (!order.isPaid()) return checkStatusWithoutPayment(order);
+        else if (!order.isDelivered()) return checkStatusWithoutDelivered(order);
         return checkStatusResponseMap(order);
     }
 
@@ -93,7 +92,7 @@ public class UserServicesImpl implements UserServices{
 
     @Override
     public OrderPaymentResponse makePayment(OrderPaymentRequest orderPaymentRequest) {
-        adminServices.sendOrder(orderPaymentRequest);
+        adminServices.collectOrderFromSender(orderPaymentRequest);
 
         Order order = trackOrderBy(orderPaymentRequest.getOrderId());
 

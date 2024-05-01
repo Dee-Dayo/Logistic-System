@@ -2,6 +2,7 @@ package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Rider;
+import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.dto.requests.RiderLoginRequest;
 import africa.semicolon.LogisticSystem.dto.response.RiderLoginResponse;
@@ -22,6 +23,8 @@ public class RiderServiceImpl implements RiderService{
 
     @Autowired
     RiderRepository riderRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     @Override
     public RiderLoginResponse login(RiderLoginRequest riderLoginRequest) {
@@ -34,23 +37,44 @@ public class RiderServiceImpl implements RiderService{
 
     @Override
     public Order pickupItemFromCustomer(Order order) {
-        Rider rider = findRider();
+//        Rider rider = findRider();
 
-        order.setIsAssignedTo(rider);
+//        order.setIsAssignedTo(rider);
         order.setDatePickedUp(LocalDateTime.now());
+//        rider.getOrders().add(order);
+//        riderRepository.save(rider);
 
         return order;
     }
 
+//    @Override
+//    public Order deliverItemToReceiver(Order pickedUpOrder) {
+//        Rider rider = pickedUpOrder.getIsAssignedTo();
+//        rider.setAvailable(false);
+//        riderRepository.save(rider);
+//
+//        pickedUpOrder.setDelivered(true);
+//        pickedUpOrder.setDateDeliveredToReceiver(LocalDateTime.now());
+//
+//        rider.setAvailable(true);
+//        riderRepository.save(rider);
+//        return pickedUpOrder;
+//    }
+
     @Override
-    public Order deliverItemToReceiver(Order pickedUpOrder) {
-        Rider rider = pickedUpOrder.getIsAssignedTo();
+    public void deliverItems(Rider rider) {
+        List<Order> orders = rider.getOrders();
         rider.setAvailable(false);
         riderRepository.save(rider);
 
-        pickedUpOrder.setDelivered(true);
-        pickedUpOrder.setDateDeliveredToReceiver(LocalDateTime.now());
-        return pickedUpOrder;
+        for (Order order : orders) {
+            order.setDelivered(true);
+            order.setDateDeliveredToReceiver(LocalDateTime.now());
+            orderRepository.save(order);
+        }
+
+        rider.setAvailable(true);
+        riderRepository.save(rider);
     }
 
     @Override
@@ -62,11 +86,6 @@ public class RiderServiceImpl implements RiderService{
         throw new RiderNotAvailableException("No rider available at the moment");
     }
 
-    @Override
-    public void assignOrder(Rider rider, Order order) {
-        order.setIsAssignedTo(rider);
-        order.setPending(true);
-    }
 
     @Override
     public int findNoOfAvailableRiders() {
@@ -74,11 +93,6 @@ public class RiderServiceImpl implements RiderService{
         return riders.size();
     }
 
-    @Override
-    public void save(Rider rider) {
-        if(riderRepository.existsById(rider.getId())) throw new RiderAlreadyExist("Rider already exist");
-        riderRepository.save(rider);
-    }
 
     public Rider findRiderByNumber(String phoneNumber) {
         Rider rider = riderRepository.findByPhoneNumber(phoneNumber);

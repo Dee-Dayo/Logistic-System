@@ -89,20 +89,39 @@ public class Mapper {
         OrderPaymentResponse orderPaymentResponse = new OrderPaymentResponse();
         orderPaymentResponse.setOrderId(order.getId());
         orderPaymentResponse.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
-        orderPaymentResponse.setRiderName(order.getIsAssignedTo().getFirstName());
+//        orderPaymentResponse.setRiderName(order.getIsAssignedTo().getFirstName());
         orderPaymentResponse.setPaymentStatus(order.isPaid());
-        orderPaymentResponse.setDateCollected(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCollected()));
+        orderPaymentResponse.setDateCollected(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDatePaymentMade()));
         return orderPaymentResponse;
     }
+
+    public static UnpaidOrderStatusResponse checkStatusWithoutPayment (Order order){
+         UnpaidOrderStatusResponse unpaidOrderStatusResponse = new UnpaidOrderStatusResponse();
+         unpaidOrderStatusResponse.setOrderId(order.getId());
+         unpaidOrderStatusResponse.setOrderAmount(order.getAmount());
+         unpaidOrderStatusResponse.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
+        return unpaidOrderStatusResponse;
+     }
+
+     public static UndeliveredOrderStatusResponse checkStatusWithoutDelivered (Order order){
+         UndeliveredOrderStatusResponse undeliveredOrderStatusResponse = new UndeliveredOrderStatusResponse();
+         undeliveredOrderStatusResponse.setOrderId(order.getId());
+         undeliveredOrderStatusResponse.setOrderAmount(order.getAmount());
+         undeliveredOrderStatusResponse.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
+         undeliveredOrderStatusResponse.setDatePickedUp(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDatePickedUp()));
+         undeliveredOrderStatusResponse.setDateDroppedAtHQTR(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateDeliveredToHQ()));
+         return undeliveredOrderStatusResponse;
+     }
 
     public static OrderStatusResponse checkStatusResponseMap (Order order){
          OrderStatusResponse orderStatusResponse = new OrderStatusResponse();
          orderStatusResponse.setOrderId(order.getId());
          orderStatusResponse.setDateCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCreated()));
-         orderStatusResponse.setPaymentMade(order.isPaid());
-         orderStatusResponse.setDateCollected(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateCollected()));
-         orderStatusResponse.setCompleted(order.isDelivered());
-         orderStatusResponse.setDateDelivered(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateDelivered()));
+         orderStatusResponse.setDatePayed(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDatePaymentMade()));
+         orderStatusResponse.setDateCollectedFromSender(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDatePickedUp()));
+        orderStatusResponse.setDateDeliveredToHQTR(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateDeliveredToHQ()));
+        orderStatusResponse.setDatePickedFromHQTR(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDatePickedUpFromHQ()));
+         orderStatusResponse.setDateDeliveredToReceiver(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(order.getDateDeliveredToReceiver()));
         return orderStatusResponse;
      }
 }

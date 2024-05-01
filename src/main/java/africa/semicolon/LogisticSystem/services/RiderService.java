@@ -8,12 +8,10 @@ import africa.semicolon.LogisticSystem.dto.response.RiderLoginResponse;
 public interface RiderService {
     Rider findRider();
     Rider findRiderByNumber(String number);
-    void assignOrder(Rider rider, Order order);
     int findNoOfAvailableRiders();
-    void save(Rider rider1);
     RiderLoginResponse login(RiderLoginRequest riderLoginRequest);
-
     Order pickupItemFromCustomer(Order order);
+//    Order deliverItemToReceiver(Order pickedUpOrder);
 
-    Order deliverItemToReceiver(Order pickedUpOrder);
+    void deliverItems(Rider rider);
 }

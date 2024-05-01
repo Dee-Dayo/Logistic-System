@@ -11,7 +11,6 @@ import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
 import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
 import africa.semicolon.LogisticSystem.exceptions.*;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ import static africa.semicolon.LogisticSystem.utils.Mapper.requestMap;
 import static africa.semicolon.LogisticSystem.utils.Mapper.responseMap;
 
 @Service
-public class AdminServicesImpl implements AdminServices{
+public class AdminServicesImpl implements AdminServices {
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -34,7 +33,6 @@ public class AdminServicesImpl implements AdminServices{
     RiderService riderService;
     @Autowired
     OrderService orderService;
-
 
 
     @Override
@@ -62,7 +60,7 @@ public class AdminServicesImpl implements AdminServices{
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
         validateLength(userRegisterRequest.getPhoneNumber());
         validatePhoneNumber(userRegisterRequest.getPhoneNumber());
-        validateNumber(userRegisterRequest.getAddress());
+        validateAddress(userRegisterRequest.getAddress());
 
         User newUser = requestMap(userRegisterRequest);
         userRepository.save(newUser);
@@ -70,7 +68,7 @@ public class AdminServicesImpl implements AdminServices{
         return responseMap(newUser);
     }
 
-    private void validateNumber(String address) {
+    private void validateAddress(String address) {
         if (address == null) throw new InvalidAddress("Invalid address");
     }
 
@@ -80,7 +78,7 @@ public class AdminServicesImpl implements AdminServices{
         riderService.findRider();
 
         Order order = orderService.setOrder(user, sendOrderRequest);
-
+//        orderRepository.save(order);
 
 
         return order;
@@ -95,39 +93,59 @@ public class AdminServicesImpl implements AdminServices{
     public int findAvailableRiders() {
         List<Rider> riders = riderRepository.findAll();
         List<Rider> available = new ArrayList<>();
-        for (Rider rider : riders){
+        for (Rider rider : riders) {
             if (rider.isAvailable()) available.add(rider);
         }
         return available.size();
     }
 
     @Override
-    public void sendOrder(OrderPaymentRequest orderPaymentRequest) {
+    public void collectOrderFromSender(OrderPaymentRequest orderPaymentRequest) {
+        orderService.setPaymentStatus(orderPaymentRequest);
         Order order = orderService.getOrderById(orderPaymentRequest.getOrderId());
-
-        if (orderPaymentRequest.getOrderAmount() >= order.getAmount()){
-            order.setPaid(true);
-            order.setDatePaymentMade(LocalDateTime.now());
-            orderRepository.save(order);
-        } else throw new OrderPaymentNotMade("Insufficient amount for order");
 
         Order pickedUpOrder = riderService.pickupItemFromCustomer(order);
         pickedUpOrder.setDateDeliveredToHQ(LocalDateTime.now());
-
-
-        pickedUpOrder.setDatePickedUpFromHQ(LocalDateTime.now());
+//        pickedUpOrder.setIsAssignedTo(null);
 
         orderRepository.save(pickedUpOrder);
 
-        Order deliveredOrder = riderService.deliverItemToReceiver(pickedUpOrder);
-        orderRepository.save(deliveredOrder);
+
+
+
+
+
+//        Order deliveredOrder = riderService.deliverItemToReceiver(pickedUpOrder);
+//        orderRepository.save(deliveredOrder);
+    }
+
+    public void sendAllOrdersInSelectedArea(String address) {
+        List<Order> allOrders = getAllOrders();
+
+        List<Order> selectedOrders = new ArrayList<>();
+        for (Order order : allOrders) {
+            if (order.getReceiverAddress() == address && order.isPaid()) selectedOrders.add(order);
+        }
+
+        if (selectedOrders.isEmpty()) throw new NoOrderException("No order found");
+
+        Rider rider = riderService.findRider();
+
+        for (Order order : selectedOrders){
+            order.setDatePickedUpFromHQ(LocalDateTime.now());
+            order.setIsAssignedTo(rider);
+            orderRepository.save(order);
+        }
+        rider.setOrders(selectedOrders);
+
+        riderService.deliverItems(rider);
     }
 
     @Override
     public List<Order> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         if (orders.isEmpty()) throw new NoOrderException("No orders found");
-        return orderRepository.findAll();
+        return orders;
     }
 
 
@@ -141,8 +159,9 @@ public class AdminServicesImpl implements AdminServices{
         if (userExists) throw new UserAlreadyExistException("Phone number already exist");
     }
 
-    private void validateRiderPhoneNumber(String phoneNumber){
+    private void validateRiderPhoneNumber(String phoneNumber) {
         boolean riderExists = riderRepository.existsByPhoneNumber(phoneNumber);
         if (riderExists) throw new RiderAlreadyExist("Phone number already exist");
     }
+
 }

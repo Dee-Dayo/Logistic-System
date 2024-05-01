@@ -3,11 +3,8 @@ package africa.semicolon.LogisticSystem.dto.response;
 import lombok.Data;
 
 @Data
-public class OrderPaymentResponse {
+public class UnpaidOrderStatusResponse {
     private String orderId;
+    private int orderAmount;
     private String dateCreated;
-//    private String riderName;
-    private String dateCollected;
-    private boolean paymentStatus;
-
 }

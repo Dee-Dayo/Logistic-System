@@ -18,7 +18,7 @@ public interface AdminServices {
     Order takeOrder(User user, SendOrderRequest sendOrderRequest);
     Long noOfOrders();
     int findAvailableRiders();
-    void sendOrder(OrderPaymentRequest orderPaymentRequest);
+    void collectOrderFromSender(OrderPaymentRequest orderPaymentRequest);
     List<Order> getAllOrders();
     RiderRegisterResponse register(RiderRegisterRequest riderRegisterRequest);
 }
