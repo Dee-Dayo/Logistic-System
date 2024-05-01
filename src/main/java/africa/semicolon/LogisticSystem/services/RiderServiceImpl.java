@@ -2,12 +2,9 @@ package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.Order;
 import africa.semicolon.LogisticSystem.data.models.Rider;
-import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.dto.requests.RiderLoginRequest;
-import africa.semicolon.LogisticSystem.dto.requests.UserLoginRequest;
 import africa.semicolon.LogisticSystem.dto.response.RiderLoginResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserLoginResponse;
 import africa.semicolon.LogisticSystem.exceptions.InvalidPasswordException;
 import africa.semicolon.LogisticSystem.exceptions.RiderAlreadyExist;
 import africa.semicolon.LogisticSystem.exceptions.RiderNotAvailableException;
@@ -33,6 +30,27 @@ public class RiderServiceImpl implements RiderService{
         rider.setLoggedIn(true);
         riderRepository.save(rider);
         return loginResponseMap(rider);
+    }
+
+    @Override
+    public Order pickupItemFromCustomer(Order order) {
+        Rider rider = findRider();
+
+        order.setIsAssignedTo(rider);
+        order.setDatePickedUp(LocalDateTime.now());
+
+        return order;
+    }
+
+    @Override
+    public Order deliverItemToReceiver(Order pickedUpOrder) {
+        Rider rider = pickedUpOrder.getIsAssignedTo();
+        rider.setAvailable(false);
+        riderRepository.save(rider);
+
+        pickedUpOrder.setDelivered(true);
+        pickedUpOrder.setDateDeliveredToReceiver(LocalDateTime.now());
+        return pickedUpOrder;
     }
 
     @Override

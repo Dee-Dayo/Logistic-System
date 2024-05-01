@@ -78,14 +78,10 @@ public class AdminServicesImpl implements AdminServices{
     @Override
     public Order takeOrder(User user, SendOrderRequest sendOrderRequest) {
         riderService.findRider();
-//        rider.setAvailable(false);
-//        riderRepository.save(rider);
 
         Order order = orderService.setOrder(user, sendOrderRequest);
 
 
-//        order.setIsAssignedTo(rider);
-//        orderRepository.save(order);
 
         return order;
     }
@@ -111,17 +107,20 @@ public class AdminServicesImpl implements AdminServices{
 
         if (orderPaymentRequest.getOrderAmount() >= order.getAmount()){
             order.setPaid(true);
-            order.setDateCollected(LocalDateTime.now());
+            order.setDatePaymentMade(LocalDateTime.now());
             orderRepository.save(order);
         } else throw new OrderPaymentNotMade("Insufficient amount for order");
 
+        Order pickedUpOrder = riderService.pickupItemFromCustomer(order);
+        pickedUpOrder.setDateDeliveredToHQ(LocalDateTime.now());
 
-        try {Thread.sleep(60000);}
-        catch (InterruptedException e) { e.printStackTrace(); }
 
-        order.setDelivered(true);
-        order.setDateDelivered(LocalDateTime.now().plusHours(2));
-        orderRepository.save(order);
+        pickedUpOrder.setDatePickedUpFromHQ(LocalDateTime.now());
+
+        orderRepository.save(pickedUpOrder);
+
+        Order deliveredOrder = riderService.deliverItemToReceiver(pickedUpOrder);
+        orderRepository.save(deliveredOrder);
     }
 
     @Override

@@ -20,6 +20,9 @@ public class Order {
     private boolean isPending;
     private boolean isDelivered;
     private LocalDateTime dateCreated = LocalDateTime.now();
-    private LocalDateTime dateCollected;
-    private LocalDateTime dateDelivered;
+    private LocalDateTime datePaymentMade;
+    private LocalDateTime datePickedUp;
+    private LocalDateTime dateDeliveredToHQ;
+    private LocalDateTime datePickedUpFromHQ;
+    private LocalDateTime dateDeliveredToReceiver;
 }
