@@ -137,4 +137,24 @@ public class Mapper {
         orderResponse.setDelivered(order.isDelivered());
         return orderResponse;
     }
+
+    public static AdminUsersResponse userMap(User user) {
+        AdminUsersResponse adminUsersResponse = new AdminUsersResponse();
+        adminUsersResponse.setId(user.getId());
+        adminUsersResponse.setFirstName(user.getFirstName());
+        adminUsersResponse.setLastName(user.getLastName());
+        adminUsersResponse.setAddress(user.getAddress());
+        adminUsersResponse.setPhoneNumber(user.getPhoneNumber());
+        return adminUsersResponse;
+    }
+
+    public static AdminRidersResponse riderMap(Rider rider){
+        AdminRidersResponse adminRidersResponse = new AdminRidersResponse();
+        adminRidersResponse.setId(rider.getId());
+        adminRidersResponse.setFirstname(rider.getFirstName());
+        adminRidersResponse.setLastName(rider.getLastName());
+        adminRidersResponse.setPhoneNumber(rider.getPhoneNumber());
+        adminRidersResponse.setAvailable(rider.isAvailable());
+        return adminRidersResponse;
+    }
 }

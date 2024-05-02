@@ -6,9 +6,7 @@ import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.response.OrderResponse;
-import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
+import africa.semicolon.LogisticSystem.dto.response.*;
 
 import java.util.List;
 
@@ -20,7 +18,11 @@ public interface AdminServices {
     Long noOfOrders();
     int findAvailableRiders();
     void collectOrderFromSender(OrderPaymentRequest orderPaymentRequest);
-    List<Order> getAllOrders();
+//    List<Order> getAllOrders();
     List<OrderResponse> getAllUsersOrders();
     RiderRegisterResponse register(RiderRegisterRequest riderRegisterRequest);
+
+    List<AdminUsersResponse> getAllUsers();
+
+    List<AdminRidersResponse> getAllRiders();
 }

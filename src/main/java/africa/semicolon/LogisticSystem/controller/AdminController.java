@@ -27,4 +27,24 @@ public class AdminController {
             return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
         }
     }
+
+    @GetMapping("/all_users")
+    public ResponseEntity<?> allUsers(){
+        try {
+            List<AdminUsersResponse> responses = adminServices.getAllUsers();
+            return new ResponseEntity<>(new LogisticsApiResponse(true, responses), ACCEPTED);
+        } catch (LogisticSystemsExceptions error) {
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/all-riders")
+    public ResponseEntity<?> allRiders(){
+        try {
+            List<AdminRidersResponse> responses = adminServices.getAllRiders();
+            return new ResponseEntity<>(new LogisticsApiResponse(true, responses), ACCEPTED);
+        } catch (LogisticSystemsExceptions error) {
+            return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), FORBIDDEN);
+        }
+    }
 }

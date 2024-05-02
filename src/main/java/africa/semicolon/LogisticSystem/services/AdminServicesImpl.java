@@ -8,9 +8,7 @@ import africa.semicolon.LogisticSystem.dto.requests.OrderPaymentRequest;
 import africa.semicolon.LogisticSystem.dto.requests.RiderRegisterRequest;
 import africa.semicolon.LogisticSystem.dto.requests.SendOrderRequest;
 import africa.semicolon.LogisticSystem.dto.requests.UserRegisterRequest;
-import africa.semicolon.LogisticSystem.dto.response.OrderResponse;
-import africa.semicolon.LogisticSystem.dto.response.RiderRegisterResponse;
-import africa.semicolon.LogisticSystem.dto.response.UserRegisterResponse;
+import africa.semicolon.LogisticSystem.dto.response.*;
 import africa.semicolon.LogisticSystem.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +53,7 @@ public class AdminServicesImpl implements AdminServices {
 
         return responseMap(newRider);
     }
+
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
@@ -141,8 +140,7 @@ public class AdminServicesImpl implements AdminServices {
         riderService.deliverItems(rider);
     }
 
-    @Override
-    public List<Order> getAllOrders() {
+    private List<Order> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         if (orders.isEmpty()) throw new NoOrderException("No orders found");
         return orders;
@@ -159,6 +157,33 @@ public class AdminServicesImpl implements AdminServices {
             orderResponses.add(response);
         }
         return orderResponses;
+    }
+
+    @Override
+    public List<AdminUsersResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) throw new UserNotFoundException("No users found");
+
+        List<AdminUsersResponse> usersResponses = new ArrayList<>();
+        for (User user : users) {
+            AdminUsersResponse response = userMap(user);
+            usersResponses.add(response);
+        }
+
+        return usersResponses;
+    }
+
+    @Override
+    public List<AdminRidersResponse> getAllRiders() {
+        List<Rider> riders = riderRepository.findAll();
+        if (riders.isEmpty()) throw new RiderNotFoundException("No riders found");
+
+        List<AdminRidersResponse> ridersResponses = new ArrayList<>();
+        for (Rider rider : riders) {
+            AdminRidersResponse response = riderMap(rider);
+            ridersResponses.add(response);
+        }
+        return ridersResponses;
     }
 
 
