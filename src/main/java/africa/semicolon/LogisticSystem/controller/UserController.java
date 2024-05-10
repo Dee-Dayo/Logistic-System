@@ -15,6 +15,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/DeeLogistics")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -25,7 +26,6 @@ public class UserController {
     RiderService riderService;
     @Autowired
     OrderService orderService;
-
 
     @PostMapping("/register-user")
     public ResponseEntity<?> register(@RequestBody UserRegisterRequest userRegisterRequest){
