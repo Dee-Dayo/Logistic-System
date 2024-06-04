@@ -79,8 +79,8 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public Object trackOrderById(CheckStatusRequest orderId) {
-        Order order = trackOrderBy(orderId.getOrderId());
+    public Object trackOrderById(String orderId) {
+        Order order = trackOrderBy(orderId);
         if (!order.isPaid()) return checkStatusWithoutPayment(order);
         else if (!order.isDelivered()) return checkStatusWithoutDelivered(order);
         return checkStatusResponseMap(order);

@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LogisticsApiResponse {
-    boolean isSuccessful;
+    boolean isSuccess;
     Object logisticsSystemResponse;
 }

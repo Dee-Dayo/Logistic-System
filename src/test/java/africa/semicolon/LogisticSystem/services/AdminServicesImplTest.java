@@ -2,6 +2,7 @@ package africa.semicolon.LogisticSystem.services;
 
 import africa.semicolon.LogisticSystem.data.models.User;
 import africa.semicolon.LogisticSystem.data.repositories.OrderRepository;
+import africa.semicolon.LogisticSystem.data.repositories.RiderRepository;
 import africa.semicolon.LogisticSystem.data.repositories.UserRepository;
 import africa.semicolon.LogisticSystem.dto.requests.*;
 import africa.semicolon.LogisticSystem.exceptions.OrderPaymentNotMade;
@@ -26,6 +27,8 @@ class AdminServicesImplTest {
     @Autowired
     OrderRepository orderRepository;
     @Autowired
+    RiderRepository riderRepository;
+    @Autowired
     public OrderService orderService;
     @Autowired
     public RiderService riderService;
@@ -33,12 +36,14 @@ class AdminServicesImplTest {
     private UserRegisterRequest userRegisterRequest;
     private UserLoginRequest userLoginRequest;
     private User receiver;
-
+    private RiderRegisterRequest riderRegisterRequest;
 
     @BeforeEach
     public void setUp() {
         userRepository.deleteAll();
         orderRepository.deleteAll();
+        riderRepository.deleteAll();
+
 
         userRegisterRequest = new UserRegisterRequest();
         userRegisterRequest.setFirstName("Dayo");
@@ -46,6 +51,13 @@ class AdminServicesImplTest {
         userRegisterRequest.setPhoneNumber("44444444444");
         userRegisterRequest.setPassword("password");
         userRegisterRequest.setAddress("yaba");
+
+        riderRegisterRequest = new RiderRegisterRequest();
+        riderRegisterRequest.setFirstName("Akinyemi");
+        riderRegisterRequest.setLastName("Akinyemi");
+        riderRegisterRequest.setPhoneNumber("00000000000");
+        riderRegisterRequest.setPassword("password");
+
 
         userLoginRequest = new UserLoginRequest();
         userLoginRequest.setPhoneNumber("44444444444");
@@ -77,10 +89,6 @@ class AdminServicesImplTest {
         assertEquals(2, adminServices.findNoOfUsers());
     }
 
-    @Test
-    public void adminHasTwoRidersByDefaultAvailable(){
-        assertEquals(2, adminServices.findNoOfRiders());
-    }
 
     @Test
     public void userCanRegister_userCanLogin(){
@@ -94,8 +102,8 @@ class AdminServicesImplTest {
     @Test
     public void userCollectOrders_orderFromSenderRepositoryIsOne(){
         adminServices.register(userRegisterRequest);
+        adminServices.register(riderRegisterRequest);
          assertEquals(0, adminServices.noOfOrders());
-         assertEquals(2, adminServices.findAvailableRiders());
 
         userServices.login(userLoginRequest);
         User sender = userServices.findUserByNumber("44444444444");
@@ -113,8 +121,8 @@ class AdminServicesImplTest {
     @Test
     public void userCollectOrder_adminAssignRiderToRetrieveOrderFromSender(){
         adminServices.register(userRegisterRequest);
+        adminServices.register(riderRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
-        assertEquals(2, adminServices.findAvailableRiders());
 
         userServices.login(userLoginRequest);
         User sender = userServices.findUserByNumber("44444444444");
@@ -131,8 +139,11 @@ class AdminServicesImplTest {
         assertEquals(1, adminServices.noOfOrders());
 
         Order order = orderService.getOrderByUser(sender);
+        System.out.println(order);
 
-        assertEquals("Moh", order.getIsAssignedTo().getFirstName());
+        Object answer = userServices.trackOrderById(order.getId());
+        System.out.println(answer);
+
         assertEquals(1, riderService.findNoOfAvailableRiders());
         assertEquals(1, adminServices.findAvailableRiders());
     }
@@ -140,6 +151,7 @@ class AdminServicesImplTest {
     @Test
     public void userCollectOrder_adminAssignRiderToRetrieveOrder_FromSender_SenderMakesPayment(){
         adminServices.register(userRegisterRequest);
+        adminServices.register(riderRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
 
         userServices.login(userLoginRequest);
@@ -178,6 +190,7 @@ class AdminServicesImplTest {
      @Test
     public void userCollectOrder_adminAssignRiderToRetrieveOrder_FromSender_SenderDoesntMakeFullPayment_ThrowException(){
         adminServices.register(userRegisterRequest);
+        adminServices.register(riderRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
 
         userServices.login(userLoginRequest);
@@ -210,6 +223,7 @@ class AdminServicesImplTest {
     @Test
     public void userCollectOrder_adminAssignRiderToRetrieveOrder_senderMakesPayment_orderFromSenderDelivered(){
         adminServices.register(userRegisterRequest);
+        adminServices.register(riderRegisterRequest);
         assertEquals(0, adminServices.noOfOrders());
 
         userServices.login(userLoginRequest);

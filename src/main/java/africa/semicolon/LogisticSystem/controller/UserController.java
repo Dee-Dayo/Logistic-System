@@ -67,11 +67,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/get_order_status")
-    public ResponseEntity<?> orderStatus(@RequestBody CheckStatusRequest orderId){
+    @GetMapping("/{orderId}")
+    public ResponseEntity<?> orderStatus(@PathVariable("orderId") String orderId){
         try {
             Object response = userServices.trackOrderById(orderId);
-            return new ResponseEntity<>(new LogisticsApiResponse(true, response), FOUND);
+            return new ResponseEntity<>(new LogisticsApiResponse(true, response), OK);
         } catch (LogisticSystemsExceptions error){
             return new ResponseEntity<>(new LogisticsApiResponse(false, error.getMessage()), BAD_REQUEST);
         }

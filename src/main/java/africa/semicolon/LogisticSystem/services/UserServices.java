@@ -13,6 +13,6 @@ public interface UserServices {
     UserLoginResponse login(UserLoginRequest userLoginRequest);
     User findUserByNumber(String phoneNumber);
     UserSendOrderResponse sendOrder(SendOrderRequest sendOrderRequest);
-    Object trackOrderById(CheckStatusRequest orderId);
+    Object trackOrderById(String orderId);
     OrderPaymentResponse makePayment(OrderPaymentRequest orderPaymentRequest);
 }
