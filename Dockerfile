@@ -3,7 +3,7 @@ FROM maven:3.8.7 AS build
 COPY . .
 RUN mvn -B clean package -DskipTests
 
-FROM openjdk:17
-COPY --from=build ./target/*.jar deelogistics.jar
+FROM openjdk:17-jdk-slim
+COPY target/LogisticSystem-1.0-SNAPSHOT.jar app.jar
 
-ENTRYPOINT ["java", "-jar","-Dserver.port=8080", "deelogistics.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
